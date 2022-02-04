@@ -1,6 +1,7 @@
+from SaveManager import SaveManager
 
 def main():
-    pass
+    save_manager = SaveManager()
 
 
 if __name__ == '__main__':
