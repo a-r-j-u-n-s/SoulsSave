@@ -1,19 +1,21 @@
 # Elden Ring Save Manager
 _A save file manager for Elden Ring on Steam_
 
-## About
+## _About_
 This Python CLI allows you to manage your save files for Elden Ring
 
-## Usage
+## _Usage_
 There are two primary modes for this script to run in:
 
 ### restore
-`python eldensave restore`
+`python eldensave.py load`
 
-Restore mode is for when you want to replace the current save file with one of your saved backups
+`load` is for when you want to replace the current save file with one of your saved backups
 
 ### save
-`python eldensave save`
+`python eldensave.py save`
+
+`save` is for when you want to save your current savegame in a new backup
 
 ## Dependencies
 
