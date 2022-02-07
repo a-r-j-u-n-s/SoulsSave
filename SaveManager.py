@@ -5,6 +5,9 @@ import shutil
 import os
 import pickle
 
+SAVE_DATA = 'savedata'
+SAVE_DIR = 'saves/'
+
 """
 Save Manager
 
@@ -13,20 +16,23 @@ Save Manager
 - STORE/UPDATE ALL SAVE DATA WITH PICKLE
 - option to list all saves (-l)
 """
-
-
 class SaveManager:
     def __init__(self,
                  mode,
                  args,
-                 custom_loc=False
+                 custom_loc=False,
                  ):
         self.__user = getpass.getuser()
         self.save_path = None
         self.mode = mode
         self.args = args
-        # self.saves = []  # List of Save objects (PICKLE)
+        self.saves = []
         self.save = None
+
+        # Load current save data
+        self.__unpickle_saves()
+        if not self.saves:
+            print('Save data currently empty...')
 
         # List all current saves
         if self.args.list:
@@ -63,6 +69,8 @@ class SaveManager:
                 save_name = input('Please enter the name of your save: ').strip()
                 save_description = input('Please enter a brief description of your save: ').strip()
                 self.save = self.create_save(save_name, save_description)
+                self.saves.append(self.save)
+                self.__pickle_saves()
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
@@ -70,7 +78,6 @@ class SaveManager:
     """
     Retrieves expected location or asks user to input custom location of their savegame
     """
-
     def get_save_path(self) -> Path:
         custom = False
         print('Checking default Elen Ring save location...')
@@ -97,13 +104,22 @@ class SaveManager:
 
     def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
-        os.makedirs(os.path.dirname(self.saves_path + f'/{mode}/' + save_name), exist_ok=True)
-        shutil.copyfile(self.save_path, self.saves_path + f'/{mode}/' + save_name)
+        os.makedirs(os.path.dirname(SAVE_DIR + f'/{mode}/' + save_name), exist_ok=True)
+        shutil.copyfile(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
 
     def load_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
-        shutil.copyfile(self.saves_path + f'/{mode}/' + save_name, self.save_path)
+        shutil.copyfile(SAVE_DIR + f'/{mode}/' + save_name, self.save_path)
+
+    def __unpickle_saves(self):
+        if os.path.getsize(SAVE_DATA) > 0:
+            with open(SAVE_DATA, "rb") as f:
+                self.saves = pickle.load(f)
+
+    def __pickle_saves(self):
+        with open(SAVE_DATA, "wb") as f:
+            pickle.dump(self.saves, f)
 
     @staticmethod
     def check_process_running(process_name):
@@ -136,7 +152,6 @@ class SaveManager:
             self.outer_instance = outer_instance
             self.name = name
             self.description = description
-            self.path = outer_instance.saves_path
             self.__make_directory()
             self.save_file()
 
@@ -144,7 +159,7 @@ class SaveManager:
             print(f'{self.name}: {self.description}')
 
         def __make_directory(self):
-            path = self.path + self.name
+            path = SAVE_DIR + self.name
             try:
                 os.mkdir(path)
             except FileExistsError:
