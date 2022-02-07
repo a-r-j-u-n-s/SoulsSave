@@ -5,15 +5,15 @@ import shutil
 import os
 import pickle
 
-SAVE_DATA = 'savedata'
 SAVE_DIR = 'saves/'
+SAVE_DATA = SAVE_DIR + 'savedata'
 
 """
 Save Manager
 
 - add function to restore automatic temporary backup
 - flush temporaries if file name changes?
-- option to remove saves
+- change custom -c flag logic to be more intuitive
 """
 class SaveManager:
     def __init__(self,
@@ -25,24 +25,21 @@ class SaveManager:
         self.save_path = None
         self.mode = mode
         self.args = args
-        self.saves = []
+        self.saves = {}
         self.save = None
 
         # Load current save data
         self.__unpickle_saves()
         if not self.saves:
             print('Save data currently empty...')
-        print(self.saves)
 
         # List all current saves
         if self.args.list:
             self.print_user_saves()
 
         # Create custom directory structure for storing saves
-        try:
-            os.mkdir('saves/')
-        except FileExistsError:
-            pass
+        # RECREATE ENTIRE STRUCTURE?
+        self.__create_save_dirs()
 
         # If custom location flag
         if not custom_loc:
@@ -51,10 +48,9 @@ class SaveManager:
             with open('game_savepath.txt', 'r') as f:
                 self.save_path = Path(f.read().strip().lstrip('/'))
 
-        self.saves_path = 'saves/'  # Path to internal save/backup data
-
         self.create_backup()  # Create every time program runs
 
+        # TODO: move a lot of this logic into helper functions
         if self.mode == 'load':
             if self.args.lb__load_backup:
                 self.load_backup('userbackup')
@@ -68,8 +64,22 @@ class SaveManager:
                 save_name = input('Please enter the name of your save: ').strip()
                 save_description = input('Please enter a brief description of your save: ').strip()
                 self.save = self.create_save(save_name, save_description)
-                self.saves.append(self.save)
+                self.saves[save_name] = self.save
                 self.__pickle_saves()
+        elif self.mode == 'remove':
+            saves_to_remove = self.args.savenames
+            if not saves_to_remove:
+                print('(unimplemented)')
+            else:
+                for save in saves_to_remove:
+                    # Remove from current save data
+                    if save not in self.saves:
+                        print(f'{save} is not one of your saves, skipping...')
+                    else:
+                        print(f'deleting {save}...')
+                        del self.saves[save]
+                    # Re-pickle save data to reflect update
+                    self.__pickle_saves()
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
@@ -98,7 +108,7 @@ class SaveManager:
 
     def print_user_saves(self):
         print('Saves:')
-        for save in self.saves:
+        for save in self.saves.values():
             print(str(save))
 
     def create_backup(self, mode='temporary'):
@@ -111,6 +121,15 @@ class SaveManager:
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
         shutil.copyfile(SAVE_DIR + f'/{mode}/' + save_name, self.save_path)
 
+    def __load(self):
+        pass
+
+    def __save(self):
+        pass
+
+    def __remove(self):
+        pass
+
     def __unpickle_saves(self):
         if os.path.getsize(SAVE_DATA) > 0:
             with open(SAVE_DATA, "rb") as f:
@@ -119,6 +138,14 @@ class SaveManager:
     def __pickle_saves(self):
         with open(SAVE_DATA, "wb") as f:
             pickle.dump(self.saves, f)
+
+    @staticmethod
+    def __create_save_dirs():
+        try:
+            os.mkdir('saves/')
+        except FileExistsError:
+            # Save structure already exists, so no need to create
+            pass
 
     @staticmethod
     def check_process_running(process_name):

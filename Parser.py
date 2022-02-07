@@ -1,6 +1,6 @@
 import argparse
 
-MODES = ['load', 'save']
+MODES = ['load', 'save', 'remove']
 
 
 class ArgParser:
@@ -23,14 +23,26 @@ class ArgParser:
                                  action='store_true')
 
         # Restore a save from one of the backups
-        restore_parser = subparsers.add_parser('load',
+        load_parser = subparsers.add_parser('load',
                                                help='use this command to replace the current savegame with one of your'
                                                     'saved backups',
                                                description='for replacing the current savegame with '
                                                            'a backup that you saved previously')
-        restore_parser.add_argument('-lb' '--load-backup',
+        load_parser.add_argument('-lb' '--load-backup',
                                     help='restore your temporary backup save',
                                     action='store_true')
+
+        load_parser.add_argument('savename',
+                                   help='name of save you want to load',
+                                   )
+
+        # Restore a save from one of the backups
+        remove_parser = subparsers.add_parser('remove',
+                                               help='use this command to delete one of your savegames',
+                                               description='for deleting savegames')
+        remove_parser.add_argument('savenames',
+                                    help='name of save you want to delete',
+                                    nargs='*')
 
         self.args = self.parser.parse_args()
 
