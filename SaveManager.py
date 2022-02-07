@@ -11,6 +11,7 @@ Save Manager
 - add function to restore automatic temporary backup
 - flush temporaries if file name changes?
 - STORE/UPDATE ALL SAVE DATA WITH PICKLE
+- option to list all saves (-l)
 """
 
 
@@ -27,6 +28,17 @@ class SaveManager:
         # self.saves = []  # List of Save objects (PICKLE)
         self.save = None
 
+        # List all current saves
+        if self.args.list:
+            # List saves from pickled list?
+            pass
+
+        # Create custom directory structure for storing saves
+        try:
+            os.mkdir('saves/')
+        except FileExistsError:
+            pass
+
         # If custom location flag
         if not custom_loc:
             self.save_path = self.get_save_path()
@@ -42,6 +54,7 @@ class SaveManager:
             if self.args.lb__load_backup:
                 self.load_backup('userbackup')
             else:
+                # Which save? (option to list all saves)
                 pass
         elif self.mode == 'save':
             if self.args.b__backup:
@@ -50,9 +63,6 @@ class SaveManager:
                 save_name = input('Please enter the name of your save: ').strip()
                 save_description = input('Please enter a brief description of your save: ').strip()
                 self.save = self.create_save(save_name, save_description)
-        else:
-            print('Specified mode does not exist. Exiting...')
-            exit(1)
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)

@@ -8,7 +8,8 @@ class ArgParser:
         # Main parser
         self.parser = argparse.ArgumentParser(prog='eldensave',
                                               description='savegame manager for Elden Ring')
-        self.parser.add_argument('-c', '--custom', help='set Elden Ring save location manually in file')
+        self.parser.add_argument('-c', '--custom', help='set Elden Ring save location manually in file', action='store_true')
+        self.parser.add_argument('-l', '--list', help='list all current saves', action='store_true')
 
         # Define subparsers
         subparsers = self.parser.add_subparsers(dest='mode')
@@ -20,13 +21,6 @@ class ArgParser:
         save_parser.add_argument('-b' '--backup',
                                  help='create temporary backup save (that you know is not broken)',
                                  action='store_true')
-
-        # TODO: do both?
-        # restore_parser = subparsers.add_parser('replace',
-        #                                        help='use this command to save and replace the current savegame with one of'
-        #                                             'your saved backups ',
-        #                                        description='for replacing the current savegame with '
-        #                                                    'a backup that you saved previously')
 
         # Restore a save from one of the backups
         restore_parser = subparsers.add_parser('load',
