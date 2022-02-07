@@ -55,17 +55,20 @@ class SaveManager:
             if self.args.lb__load_backup:
                 self.load_backup('userbackup')
             else:
-                # Which save? (option to list all saves)
-                pass
+                save_name = self.__get_inputted_savename()
+                print(f'loading {save_name}...')
+                self.load_backup(save_name)
+                print(f'{save_name} loaded!')
         elif self.mode == 'save':
             if self.args.b__backup:
                 self.create_backup('userbackup')
             else:
-                save_name = input('Please enter the name of your save: ').strip()
+                save_name = self.__get_inputted_savename()
                 save_description = input('Please enter a brief description of your save: ').strip()
                 self.save = self.create_save(save_name, save_description)
                 self.saves[save_name] = self.save
                 self.__pickle_saves()
+                print(f'{save_name} created!')
         elif self.mode == 'remove':
             saves_to_remove = self.args.savenames
             if not saves_to_remove:
@@ -79,6 +82,7 @@ class SaveManager:
                         print(f'deleting {save}...')
                         del self.saves[save]
                         shutil.rmtree(SAVE_DIR + save)
+                        print(f'{save} deleted')
                     # Re-pickle save data to reflect update
                     self.__pickle_saves()
 
@@ -90,9 +94,9 @@ class SaveManager:
     """
     def get_save_path(self) -> Path:
         custom = False
-        print('Checking default Elen Ring save location...')
+        print('Checking default game save location...')
 
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/GAME_NAME/path/to/savefile.file')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at default location, please enter the full path of'
@@ -101,8 +105,8 @@ class SaveManager:
                 print('Exiting...')
                 exit(0)
         if custom:
-            print('Saving new Elden Ring save location...')
-            with open('eldenring_savepath', 'w') as f:
+            print('Storing new game save location...')
+            with open('game_savepath.txt', 'w') as f:
                 f.write(str(path))
         print('Save location found!')
         return path
@@ -117,10 +121,10 @@ class SaveManager:
         os.makedirs(os.path.dirname(SAVE_DIR + f'/{mode}/' + save_name), exist_ok=True)
         shutil.copyfile(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
 
-    def load_backup(self, mode='temporary'):
+    def load_backup(self, save='temporary'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
-        shutil.copyfile(SAVE_DIR + f'/{mode}/' + save_name, self.save_path)
+        shutil.copyfile(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
 
     def __load(self):
         pass
@@ -139,6 +143,12 @@ class SaveManager:
     def __pickle_saves(self):
         with open(SAVE_DATA, "wb") as f:
             pickle.dump(self.saves, f)
+
+    def __get_inputted_savename(self):
+        save_name = self.args.savename
+        if not save_name:
+            save_name = input('Please enter the name of your save: ').strip()
+        return save_name
 
     @staticmethod
     def __create_save_dirs():
