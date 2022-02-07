@@ -8,12 +8,13 @@ This Python CLI allows you to manage your save files for Elden Ring
 There are two primary modes for this script to run in:
 
 ### restore
-`python eldensave.py load`
+`python eldensave.py [-l] [-c] load [savenames...]`
 
-`load` is for when you want to replace the current save file with one of your saved backups
+`load` is for when you want to replace the current save file with one of your saved backups.
+
 
 ### save
-`python eldensave.py save`
+`python eldensave.py [-l] [-c] load save [savename]`
 
 `save` is for when you want to save your current savegame in a new backup
 

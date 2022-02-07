@@ -78,6 +78,7 @@ class SaveManager:
                     else:
                         print(f'deleting {save}...')
                         del self.saves[save]
+                        shutil.rmtree(SAVE_DIR + save)
                     # Re-pickle save data to reflect update
                     self.__pickle_saves()
 
@@ -91,7 +92,7 @@ class SaveManager:
         custom = False
         print('Checking default Elen Ring save location...')
 
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/')
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at default location, please enter the full path of'
