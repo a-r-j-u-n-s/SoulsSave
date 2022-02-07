@@ -2,12 +2,18 @@ import psutil
 import getpass
 from pathlib import Path
 import shutil
+import os
+import pickle
 
 """
 Save Manager
 
-- creates invisible temporary backup whenever restore is used, revert feature if it breaks
+- add function to restore automatic temporary backup
+- flush temporaries if file name changes?
+- STORE/UPDATE ALL SAVE DATA WITH PICKLE
 """
+
+
 class SaveManager:
     def __init__(self,
                  mode,
@@ -18,25 +24,44 @@ class SaveManager:
         self.save_path = None
         self.mode = mode
         self.args = args
-        self.saves = []     # List of Save objects
+        # self.saves = []  # List of Save objects (PICKLE)
+        self.save = None
 
         # If custom location flag
         if not custom_loc:
             self.save_path = self.get_save_path()
         else:
-            with open('eldenring_savepath.txt', 'r') as f:
+            with open('game_savepath.txt', 'r') as f:
                 self.save_path = Path(f.read().strip().lstrip('/'))
 
-        self._saves_path = 'saves/'    # Path to internal save/backup data
+        self.saves_path = 'saves/'  # Path to internal save/backup data
 
-        self.__create_temporary_backup()    # Create every time program runs
+        self.create_backup()  # Create every time program runs
 
-    def create_save(self, ):
+        if self.mode == 'load':
+            if self.args.lb__load_backup:
+                self.load_backup('userbackup')
+            else:
+                pass
+        elif self.mode == 'save':
+            if self.args.b__backup:
+                self.create_backup('userbackup')
+            else:
+                save_name = input('Please enter the name of your save: ').strip()
+                save_description = input('Please enter a brief description of your save: ').strip()
+                self.save = self.create_save(save_name, save_description)
+        else:
+            print('Specified mode does not exist. Exiting...')
+            exit(1)
+
+    def create_save(self, name, description):
+        return SaveManager.Save(outer_instance=self, name=name, description=description)
+
+    """
+    Retrieves expected location or asks user to input custom location of their savegame
+    """
 
     def get_save_path(self) -> Path:
-        """
-        Retrieves expected location or asks user to input custom location of their savegame
-        """
         custom = False
         print('Checking default Elen Ring save location...')
 
@@ -55,16 +80,20 @@ class SaveManager:
         print('Save location found!')
         return path
 
-    """
-    Represents an individual save
-    """
-    class Save:
-        def __init__(self):
+    def print_user_saves(self):
+        print('Saves:\n')
+        # for save in self.saves:
+        #     pass
 
-
-    def __create_temporary_backup(self):
+    def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
-        shutil.copyfile(self.save_path, self._saves_path + '/temporary/' + save_name)
+        os.makedirs(os.path.dirname(self.saves_path + f'/{mode}/' + save_name), exist_ok=True)
+        shutil.copyfile(self.save_path, self.saves_path + f'/{mode}/' + save_name)
+
+    def load_backup(self, mode='temporary'):
+        save_name = self.format_file_name(self.save_path)
+        os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
+        shutil.copyfile(self.saves_path + f'/{mode}/' + save_name, self.save_path)
 
     @staticmethod
     def check_process_running(process_name):
@@ -85,3 +114,42 @@ class SaveManager:
     def format_file_name(file):
         formatted = str(file).split('\\')[-1]
         return formatted
+
+    """
+    Represents an individual save
+    """
+    class Save:
+        def __init__(self,
+                     outer_instance,
+                     name,
+                     description):
+            self.outer_instance = outer_instance
+            self.name = name
+            self.description = description
+            self.path = outer_instance.saves_path
+            self.__make_directory()
+            self.save_file()
+
+        def __str__(self):
+            print(f'{self.name}: {self.description}')
+
+        def __make_directory(self):
+            path = self.path + self.name
+            try:
+                os.mkdir(path)
+            except FileExistsError:
+                print('You have already created a save with this name!')
+                overwrite = input("Would you like to overwrite this save? (y/n): ").strip()
+                while overwrite:
+                    if overwrite == 'n':
+                        print('Exiting...')
+                        exit(0)
+                    elif overwrite == 'y':
+                        shutil.rmtree(path)
+                        os.mkdir(path)
+                        break
+                    else:
+                        print('Please enter y or n: ')
+
+        def save_file(self):
+            self.outer_instance.create_backup(self.name)
