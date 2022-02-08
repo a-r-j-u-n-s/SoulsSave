@@ -6,7 +6,7 @@ This Python CLI allows you to manage your save files for Elden Ring
 
 ## _Usage_
 
-There are two primary modes for this script to run in:
+There are three primary modes for this script to run in:
 
 ### load
 `python eldensave.py [-l] [-c] load [savename]`
