@@ -52,39 +52,11 @@ class SaveManager:
 
         # TODO: move a lot of this logic into helper functions
         if self.mode == 'load':
-            if self.args.lb__load_backup:
-                self.load_backup('userbackup')
-            else:
-                save_name = self.__get_inputted_savename()
-                print(f'loading {save_name}...')
-                self.load_backup(save_name)
-                print(f'{save_name} loaded!')
+            self.__load()
         elif self.mode == 'save':
-            if self.args.b__backup:
-                self.create_backup('userbackup')
-            else:
-                save_name = self.__get_inputted_savename()
-                save_description = input('Please enter a brief description of your save: ').strip()
-                self.save = self.create_save(save_name, save_description)
-                self.saves[save_name] = self.save
-                self.__pickle_saves()
-                print(f'{save_name} created!')
+           self.__save()
         elif self.mode == 'remove':
-            saves_to_remove = self.args.savenames
-            if not saves_to_remove:
-                print('(unimplemented)')
-            else:
-                for save in saves_to_remove:
-                    # Remove from current save data
-                    if save not in self.saves:
-                        print(f'{save} is not one of your saves, skipping...')
-                    else:
-                        print(f'deleting {save}...')
-                        del self.saves[save]
-                        shutil.rmtree(SAVE_DIR + save)
-                        print(f'{save} deleted')
-                    # Re-pickle save data to reflect update
-                    self.__pickle_saves()
+            self.__remove()
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
@@ -96,7 +68,7 @@ class SaveManager:
         custom = False
         print('Checking default game save location...')
 
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/GAME_NAME/path/to/savefile.file')
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at default location, please enter the full path of'
@@ -127,13 +99,41 @@ class SaveManager:
         shutil.copyfile(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
 
     def __load(self):
-        pass
+        if self.args.lb__load_backup:
+            self.load_backup('userbackup')
+        else:
+            save_name = self.__get_inputted_savename()
+            print(f'loading {save_name}...')
+            self.load_backup(save_name)
+            print(f'{save_name} loaded!')
 
     def __save(self):
-        pass
+        if self.args.b__backup:
+            self.create_backup('userbackup')
+        else:
+            save_name = self.__get_inputted_savename()
+            save_description = input('Please enter a brief description of your save: ').strip()
+            self.save = self.create_save(save_name, save_description)
+            self.saves[save_name] = self.save
+            self.__pickle_saves()
+            print(f'{save_name} created!')
 
     def __remove(self):
-        pass
+        saves_to_remove = self.args.savenames
+        if not saves_to_remove:
+            print('(unimplemented)')
+        else:
+            for save in saves_to_remove:
+                # Remove from current save data
+                if save not in self.saves:
+                    print(f'{save} is not one of your saves, skipping...')
+                else:
+                    print(f'deleting {save}...')
+                    del self.saves[save]
+                    shutil.rmtree(SAVE_DIR + save)
+                    print(f'{save} deleted')
+                # Re-pickle save data to reflect update
+                self.__pickle_saves()
 
     def __unpickle_saves(self):
         if os.path.getsize(SAVE_DATA) > 0:
