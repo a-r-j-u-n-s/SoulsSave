@@ -7,10 +7,12 @@ This Python CLI allows you to manage your save files for Elden Ring
 ## _Usage_
 
 #### Optional flags
+
 -l : display all your current saves
+
 -c : indicate that you want to script to use your custom savegame location (i.e. not its default installed location)
 
-There are three primary modes for this script to run in:
+There are _three_ primary modes for this script to run in:
 
 ### load
 `python eldensave.py [-l] [-c] load [savename]`
