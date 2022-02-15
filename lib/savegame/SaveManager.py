@@ -37,7 +37,6 @@ class SaveManager:
         self.saves = {}
         self.save = None
 
-
     def start(self):
         # Load current save data from serialized savedata
         self.__unpickle_saves()
@@ -96,7 +95,7 @@ class SaveManager:
         print('Saves:')
         for save in self.saves.values():
             print(str(save))
-        print(75*'-')
+        print(75 * '-')
 
     def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
