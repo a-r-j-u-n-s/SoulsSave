@@ -1,6 +1,6 @@
 # SaveGame
 _A save folder manager for PC games_
-___
+
 ## _About_
 This Python CLI allows you to manage your save folders for PC games.
 
@@ -8,7 +8,7 @@ Primary features:
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
 - _Create/restore from a temporary unlabeled backup save_
 - _Add/delete your custom saves easily_
-___
+
 ## _Usage_
 
 There are three modes for this script to run in:
@@ -51,17 +51,17 @@ _Optional_:
 _Optional_:
 
 `savenames`: a list of your custom saves to delete. Leave blank to choose which save to delete after seeing the list
-___
+
 ## Dependencies
 
 [Python 3.8](https://www.python.org/downloads/release/python-380/)
 
 [psutil 5.7.0](https://pypi.org/project/psutil/)
-___
+
 ## _Current Tasks_
 Version: 1.0
 - Add support for multiple games!
-___
+
 
 ### Disclaimer
 Although this CLI does create automatic backups of your save file before performing any actions, you should still
