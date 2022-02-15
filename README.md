@@ -43,8 +43,8 @@ _Optional_:
 
 `savename`: 
 
-### delete
-`python eldensave.py [-l] [-c] delete [savenames...]`
+### remove
+`python eldensave.py [-l] [-c] remove [savenames...]`
 
 - For when you want to delete one or more of your backups
 
@@ -60,7 +60,7 @@ _Optional_:
 
 ## _Current Tasks_
 Version: 1.0
-- Add support for multiple games!
+- Configure script to work with multiple games!
 
 
 ### Disclaimer

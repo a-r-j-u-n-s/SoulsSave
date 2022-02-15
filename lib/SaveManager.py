@@ -36,15 +36,14 @@ class SaveManager:
     def start(self):
         # Load current save data from serialized savedata
         self.__unpickle_saves()
-        if not self.saves:
-            print('Save data currently empty...')
+        # if not self.saves:
+        #     print('Save data currently empty...')
 
         # List all current user saves
         if self.args.list:
             self.print_user_saves()
 
         # Create custom directory structure for storing saves
-        # RECREATE ENTIRE STRUCTURE?
         self.__create_save_dirs()
 
         # If custom location flag, set the game's save location to the user's input
@@ -68,7 +67,7 @@ class SaveManager:
 
     def get_save_path(self) -> Path:
         """
-        Retrieves expected location or asks user to input custom location of their savegame
+        Retrieves expected location or asks user to input custom location of their savegame.cmd
         """
         custom = False
         print('Checking default game save location...')
@@ -76,8 +75,8 @@ class SaveManager:
         path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
         while not path.exists():
             custom = True
-            path = Path(input(('Could not find savegame folder at default location, please enter the full path of '
-                               'your savegame folder (q to quit): ')))
+            path = Path(input(('Could not find savegame.cmd folder at default location, please enter the full path of '
+                               'your savegame.cmd folder (q to quit): ')))
             if str(path).strip().startswith('q'):
                 print('Exiting...')
                 exit(0)
@@ -96,13 +95,23 @@ class SaveManager:
 
     def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
-        os.makedirs(os.path.dirname(SAVE_DIR + f'/{mode}/' + save_name), exist_ok=True)
-        shutil.copyfile(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
+        path = SAVE_DIR + f'/{mode}/' + save_name
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        if Path(path).exists():
+            shutil.rmtree(path)
+        shutil.copytree(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
 
     def load_backup(self, save='temporary'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
-        shutil.copyfile(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
+        try:
+            shutil.copytree(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
+            print(f'{save_name} loaded!')
+        except FileNotFoundError:
+            if save == 'temporary':
+                print('You do not have a temporary backup currently saved!')
+            else:
+                print(f'You do not have a save called "{save}"')
 
     def __load(self):
         if self.args.b__backup:
@@ -111,7 +120,6 @@ class SaveManager:
             save_name = self.__get_inputted_savename()
             print(f'loading {save_name}...')
             self.load_backup(save_name)
-            print(f'{save_name} loaded!')
 
     def __save(self):
         if self.args.b__backup:
@@ -161,7 +169,7 @@ class SaveManager:
         try:
             os.mkdir('saves/')
         except FileExistsError:
-            # Save structure already exists, so no need to create
+            # Save structure already exists, so no need to create save folder
             pass
 
     @staticmethod

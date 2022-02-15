@@ -6,9 +6,11 @@ MODES = ['load', 'save', 'remove']
 class ArgParser:
     def __init__(self):
         # Main parser
-        self.parser = argparse.ArgumentParser(prog='eldensave',
-                                              description='savegame manager for Elden Ring')
-        self.parser.add_argument('-c', '--custom', help="tell the program that you need to set the location of the game's save folder (if it's not in the default C: drive location)",
+        self.parser = argparse.ArgumentParser(prog='savegame',
+                                              description='savegame.cmd manager for Elden Ring')
+        self.parser.add_argument('-c', '--custom', help="tell the program that you need to set the location of the "
+                                                        "game's save folder (if it's not in the default C: drive "
+                                                        "location)",
                                  action='store_true')
         self.parser.add_argument('-l', '--list', help='list all current saves', action='store_true')
 
@@ -18,10 +20,10 @@ class ArgParser:
         # Define subparsers
         subparsers = self.parser.add_subparsers(dest='mode')
 
-        # Create a backup of the current save file
+        # Create a backup of the current save folder
         save_parser = subparsers.add_parser('save',
-                                            help='use this command for saving the current savegame in a backup',
-                                            description='use this command for saving the current savegame in a backup')
+                                            help='use this command for creating a new backup out of your current '
+                                                 'savegame.cmd')
         save_parser.add_argument('-b' '--backup',
                                  help='create a temporary unnamed backup save',
                                  action='store_true')
@@ -32,9 +34,9 @@ class ArgParser:
 
         # Restore a save from one of the backups
         load_parser = subparsers.add_parser('load',
-                                            help='use this command to replace the current savegame with one of your'
+                                            help='use this command to replace the current savegame.cmd with one of your'
                                                  'saved backups',
-                                            description='for replacing the current savegame with '
+                                            description='for replacing the current savegame.cmd with '
                                                         'a backup that you saved previously')
 
         load_parser.add_argument('-b' '--backup',

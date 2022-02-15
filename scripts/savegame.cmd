@@ -1,7 +1,5 @@
-#!/usr/bin/env bash
+@REM "C:\Python39\python.exe" "..\lib\main.py"
+@REM need to install dependencies ^
 
-if [[ ! $@ ]]; then
-    python -m savegame -h
-else
-    python -m savegame $@
-fi
+@REM Temporary version using virtualenv
+"..\venv\Scripts\python.exe" "..\lib\main.py"
