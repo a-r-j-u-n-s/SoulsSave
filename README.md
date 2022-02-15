@@ -12,13 +12,23 @@ Primary features:
 ## _Usage_
 
 1. `git clone` or download this repository
-2. (Optional but recommended) Create a [virtual environment](https://docs.python.org/3/library/venv.html) in the directory 
+2. (Optional) Create a [virtual environment](https://docs.python.org/3/library/venv.html) in the directory and install the program there
 3. Install dependencies
    ```
    python -m setup install
    ```
 4. Script is ready for use!
    1. Verify by seeing if `savegame-manager` appears when you run `pip list`
+5. _Alternative method_
+   1. If `setup.py` is not working, you can still manually use the script from the project directory.
+   2. Install dependencies manually
+   ```
+    pip install -r requirements.txt
+   ```
+   3. Run script with Python directly
+   ```
+   python /lib/savegame/main.py [args...]
+   ```
 
 #### Optional flags
 
