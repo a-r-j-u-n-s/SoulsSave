@@ -1,37 +1,36 @@
-# EldenSave
-_A save file manager for Elden Ring on Steam_
-
+# SaveGame
+_A save folder manager for PC games_
+___
 ## _About_
-This Python CLI allows you to manage your save files for Elden Ring.
+This Python CLI allows you to manage your save folders for PC games.
 
 Primary features:
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
 - _Create/restore from a temporary unlabeled backup save_
-- 
-
+- _Add/delete your custom saves easily_
+___
 ## _Usage_
 
-<<<<<<< HEAD
 There are three modes for this script to run in:
-=======
+
 #### Optional flags
 
--l : display all your current saves
+`-l`: display all your current saves
 
--c : indicate that you want to script to use your custom savegame location (i.e. not its default installed location)
+`-c`: indicate that you want to script to use your custom savegame location (i.e. not its default installed location)
 
-There are _three_ primary modes for this script to run in:
+**There are _three_ primary modes for this script to run in:**
 
 ### load
 `python eldensave.py [-l] [-c] load [-b] [savename]`
 
 - For when you want to replace the current save file with one of your saved backups
 
-
 _Optional_:
 
 `-b, --backup`  : restore your temporary backup save
 
+`savename`:
 
 ### save
 `python eldensave.py [-l] [-c] save [-b] [savename]`
@@ -42,23 +41,28 @@ _Optional_:
 
 `-b, --backup`  : store your current savegame as a temporary backup that you can easily restore from
 
+`savename`: 
+
 ### delete
 `python eldensave.py [-l] [-c] delete [savenames...]`
 
 - For when you want to delete one or more of your backups
-- Leave `[savenames...]` blank to see the list of saves before choosing what to delete
 
-_Options_:
+_Optional_:
 
-`[savenames]`: a list of your custom saves to delete 
-
+`savenames`: a list of your custom saves to delete. Leave blank to choose which save to delete after seeing the list
+___
 ## Dependencies
 
 [Python 3.8](https://www.python.org/downloads/release/python-380/)
 
 [psutil 5.7.0](https://pypi.org/project/psutil/)
-
+___
+## _Current Tasks_
+Version: 1.0
+- Add support for multiple games!
+___
 
 ### Disclaimer
 Although this CLI does create automatic backups of your save file before performing any actions, you should still
-back up 
+back up your original save folder just once before using the script
