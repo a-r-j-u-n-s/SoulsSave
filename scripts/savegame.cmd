@@ -2,4 +2,4 @@
 @REM need to install dependencies ^
 
 @REM Temporary version using virtualenv
-"..\venv\Scripts\python.exe" "..\lib\main.py"
+"..\venv\Scripts\python.exe" "..\lib\main.py" %*
