@@ -11,6 +11,8 @@ Primary features:
 
 ## _Usage_
 
+`git clone `
+
 There are three modes for this script to run in:
 
 #### Optional flags
@@ -63,6 +65,7 @@ _Optional_:
 ## _Current Tasks_
 Version: 1.0
 - Configure script to work with multiple games!
+- Publish on [PyPi](https://pypi.org/)
 
 
 ### Disclaimer
