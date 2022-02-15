@@ -1,0 +1,1 @@
+".\venv\Scripts\python.exe" ".\lib\savegame\__main__.py" %*

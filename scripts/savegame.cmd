@@ -2,4 +2,4 @@
 
 @REM Temporary version using virtualenv
 @REM echo %~dp0
-".\venv\Scripts\python.exe" ".\lib\savegame\main.py" %*
+".\venv\Scripts\python.exe" ".\lib\savegame\__main__.py" %*

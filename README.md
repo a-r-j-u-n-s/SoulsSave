@@ -11,7 +11,8 @@ Primary features:
 
 ## _Usage_
 
-`git clone `
+1. `git clone` or download this repository
+2. 
 
 There are three modes for this script to run in:
 
@@ -24,7 +25,9 @@ There are three modes for this script to run in:
 **There are _three_ primary modes for this script to run in:**
 
 ### load
-`python eldensave.py [-l] [-c] load [-b] [savename]`
+```
+python eldensave.py [-l] [-c] load [-b] [savename]
+```
 
 - For when you want to replace the current save file with one of your saved backups
 
@@ -35,7 +38,9 @@ _Optional_:
 `savename`: the name of the save you want to restore. Leave blank to be prompted after seeing the current list of saves
 
 ### save
-`python eldensave.py [-l] [-c] save [-b] [savename]`
+```
+python eldensave.py [-l] [-c] save [-b] [savename]
+```
 
 - For when you want to save your current savegame in a new backup
 
@@ -46,7 +51,9 @@ _Optional_:
 `savename`: the name of your custom save. Leave blank to be prompted after seeing the current list of saves
 
 ### remove
-`python eldensave.py [-l] [-c] remove [savenames...]`
+```
+python eldensave.py [-l] [-c] remove [savenames...]
+```
 
 - For when you want to delete one or more of your backups
 
