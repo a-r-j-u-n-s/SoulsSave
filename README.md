@@ -14,8 +14,6 @@ Primary features:
 1. `git clone` or download this repository
 2. 
 
-There are three modes for this script to run in:
-
 #### Optional flags
 
 `-l`: display all your current saves
