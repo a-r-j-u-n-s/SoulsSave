@@ -5,35 +5,41 @@ import shutil
 import os
 import pickle
 
+# Internal folders/files to manage save data
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
 
-"""
-Save Manager
 
-- add function to restore automatic temporary backup
-- flush temporaries if file name changes?
-- change custom -c flag logic to be more intuitive
-"""
 class SaveManager:
+    """
+    Save Manager
+
+    - add function to restore automatic temporary backup
+    - flush temporaries if file name changes?
+    - change custom -c flag logic to be more intuitive
+    """
+
     def __init__(self,
                  mode,
                  args,
                  custom_loc=False,
                  ):
         self.__user = getpass.getuser()
+        self.__loc = custom_loc
         self.save_path = None
         self.mode = mode
         self.args = args
         self.saves = {}
         self.save = None
 
-        # Load current save data
+
+    def start(self):
+        # Load current save data from serialized savedata
         self.__unpickle_saves()
         if not self.saves:
             print('Save data currently empty...')
 
-        # List all current saves
+        # List all current user saves
         if self.args.list:
             self.print_user_saves()
 
@@ -41,8 +47,8 @@ class SaveManager:
         # RECREATE ENTIRE STRUCTURE?
         self.__create_save_dirs()
 
-        # If custom location flag
-        if not custom_loc:
+        # If custom location flag, set the game's save location to the user's input
+        if not self.__loc:
             self.save_path = self.get_save_path()
         else:
             with open('game_savepath.txt', 'r') as f:
@@ -50,28 +56,27 @@ class SaveManager:
 
         self.create_backup()  # Create every time program runs
 
-        # TODO: move a lot of this logic into helper functions
         if self.mode == 'load':
             self.__load()
         elif self.mode == 'save':
-           self.__save()
+            self.__save()
         elif self.mode == 'remove':
             self.__remove()
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
 
-    """
-    Retrieves expected location or asks user to input custom location of their savegame
-    """
     def get_save_path(self) -> Path:
+        """
+        Retrieves expected location or asks user to input custom location of their savegame
+        """
         custom = False
         print('Checking default game save location...')
 
         path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
         while not path.exists():
             custom = True
-            path = Path(input(('Could not find savegame folder at default location, please enter the full path of'
+            path = Path(input(('Could not find savegame folder at default location, please enter the full path of '
                                'your savegame folder (q to quit): ')))
             if str(path).strip().startswith('q'):
                 print('Exiting...')
@@ -87,6 +92,7 @@ class SaveManager:
         print('Saves:')
         for save in self.saves.values():
             print(str(save))
+        print(75*'-')
 
     def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
@@ -99,7 +105,7 @@ class SaveManager:
         shutil.copyfile(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
 
     def __load(self):
-        if self.args.lb__load_backup:
+        if self.args.b__backup:
             self.load_backup('userbackup')
         else:
             save_name = self.__get_inputted_savename()
@@ -181,6 +187,7 @@ class SaveManager:
     """
     Represents an individual save
     """
+
     class Save:
         def __init__(self,
                      outer_instance,

@@ -8,9 +8,12 @@ class ArgParser:
         # Main parser
         self.parser = argparse.ArgumentParser(prog='eldensave',
                                               description='savegame manager for Elden Ring')
-        self.parser.add_argument('-c', '--custom', help='set Steam game save location manually in file',
+        self.parser.add_argument('-c', '--custom', help="tell the program that you need to set the location of the game's save folder (if it's not in the default C: drive location)",
                                  action='store_true')
         self.parser.add_argument('-l', '--list', help='list all current saves', action='store_true')
+
+        # self.parser.add_argument('-s', '--set-location', help="set the location of your game's save file manually (
+        # if you think your installation is NOT on your main C: drive)", action='store_true')
 
         # Define subparsers
         subparsers = self.parser.add_subparsers(dest='mode')
@@ -20,7 +23,7 @@ class ArgParser:
                                             help='use this command for saving the current savegame in a backup',
                                             description='use this command for saving the current savegame in a backup')
         save_parser.add_argument('-b' '--backup',
-                                 help='create temporary backup save (that you know is not broken)',
+                                 help='create a temporary unnamed backup save',
                                  action='store_true')
         save_parser.add_argument('savename',
                                  help='name of save',
@@ -33,9 +36,10 @@ class ArgParser:
                                                  'saved backups',
                                             description='for replacing the current savegame with '
                                                         'a backup that you saved previously')
-        load_parser.add_argument('-lb' '--load-backup',
-                                 help='restore your temporary backup save',
-                                 action='store_true')
+
+        load_parser.add_argument('-b' '--backup',
+                     help='load your temporary backup save',
+                     action='store_true')
 
         load_parser.add_argument('savename',
                                  help='name of save you want to load',

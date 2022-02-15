@@ -1,28 +1,47 @@
-# Elden Ring Save Manager
+# EldenSave
 _A save file manager for Elden Ring on Steam_
 
 ## _About_
-This Python CLI allows you to manage your save files for Elden Ring
+This Python CLI allows you to manage your save files for Elden Ring.
+
+Primary features:
+- _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
+- _Create/restore from a temporary unlabeled backup save_
+- 
 
 ## _Usage_
 
-There are two primary modes for this script to run in:
+There are three modes for this script to run in:
 
 ### load
-`python eldensave.py [-l] [-c] load [savename]`
+`python eldensave.py [-l] [-c] load [-b] [savename]`
 
-`load` is for when you want to replace the current save file with one of your saved backups.
+- For when you want to replace the current save file with one of your saved backups
+
+
+_Optional_:
+
+`-b, --backup`  : restore your temporary backup save
 
 
 ### save
-`python eldensave.py [-l] [-c] save [savename]`
+`python eldensave.py [-l] [-c] save [-b] [savename]`
 
-`save` is for when you want to save your current savegame in a new backup
+- For when you want to save your current savegame in a new backup
+
+_Optional_:
+
+`-b, --backup`  : store your current savegame as a temporary backup that you can easily restore from
 
 ### delete
 `python eldensave.py [-l] [-c] delete [savenames...]`
 
-`delete` is for when you want to delete one or more of your backups
+- For when you want to delete one or more of your backups
+- Leave `[savenames...]` blank to see the list of saves before choosing what to delete
+
+_Options_:
+
+`[savenames]`: a list of your custom saves to delete 
 
 ## Dependencies
 

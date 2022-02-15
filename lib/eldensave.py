@@ -9,6 +9,7 @@ def main():
                                args=args,
                                mode=parser.get_mode()
                                )
+    save_manager.start()
 
 
 if __name__ == '__main__':
