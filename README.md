@@ -17,7 +17,8 @@ Primary features:
    ```
    python -m setup install
    ```
-4. Script is ready for use
+4. Script is ready for use!
+   1. Verify by seeing if `savegame-manager` appears when you run `pip list`
 
 #### Optional flags
 
@@ -29,7 +30,7 @@ Primary features:
 
 ### load
 ```
-python eldensave.py [-l] [-c] load [-b] [savename]
+savegame [-l] [-c] load [-b] [savename]
 ```
 
 - For when you want to replace the current save file with one of your saved backups
@@ -42,7 +43,7 @@ _Optional_:
 
 ### save
 ```
-python eldensave.py [-l] [-c] save [-b] [savename]
+savegame [-l] [-c] save [-b] [savename]
 ```
 
 - For when you want to save your current savegame in a new backup
@@ -55,7 +56,7 @@ _Optional_:
 
 ### remove
 ```
-python eldensave.py [-l] [-c] remove [savenames...]
+savegame [-l] [-c] remove [savenames...]
 ```
 
 - For when you want to delete one or more of your backups
@@ -71,6 +72,8 @@ _Optional_:
 [Python 3.8](https://www.python.org/downloads/release/python-380/)
 
 [psutil 5.7.0](https://pypi.org/project/psutil/)
+
+[setuptools 57.0.0](https://pypi.org/project/setuptools/)
 
 ## _Current Tasks_
 Version: 1.0
