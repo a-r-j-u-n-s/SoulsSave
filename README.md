@@ -12,7 +12,12 @@ Primary features:
 ## _Usage_
 
 1. `git clone` or download this repository
-2. 
+2. (Optional but recommended) Create a [virtual environment](https://docs.python.org/3/library/venv.html) in the directory 
+3. Install dependencies
+   ```
+   python -m setup install
+   ```
+4. Script is ready for use
 
 #### Optional flags
 

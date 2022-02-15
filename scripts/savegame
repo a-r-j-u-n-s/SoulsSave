@@ -1,1 +1,2 @@
-".\venv\Scripts\python.exe" ".\lib\savegame\__main__.py" %*
+echo off
+"python" ".\lib\savegame\__main__.py" %*
