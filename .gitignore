@@ -1,0 +1,9 @@
+# Testing directories
+/savefolder_test/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+setup.py

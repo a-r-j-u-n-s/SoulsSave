@@ -7,7 +7,7 @@ class ArgParser:
     def __init__(self):
         # Main parser
         self.parser = argparse.ArgumentParser(prog='savegame',
-                                              description='savegame.cmd manager for Elden Ring')
+                                              description='savegame manager for Elden Ring')
         self.parser.add_argument('-c', '--custom', help="tell the program that you need to set the location of the "
                                                         "game's save folder (if it's not in the default C: drive "
                                                         "location)",

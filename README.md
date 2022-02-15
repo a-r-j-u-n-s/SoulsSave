@@ -1,5 +1,5 @@
 # SaveGame
-_A save folder manager for PC games_
+_A save manager for PC games_
 
 ## _About_
 This Python CLI allows you to manage your save folders for PC games.
@@ -30,7 +30,7 @@ _Optional_:
 
 `-b, --backup`  : restore your temporary backup save
 
-`savename`:
+`savename`: the name of the save you want to restore. Leave blank to be prompted after seeing the current list of saves
 
 ### save
 `python eldensave.py [-l] [-c] save [-b] [savename]`
@@ -41,7 +41,7 @@ _Optional_:
 
 `-b, --backup`  : store your current savegame as a temporary backup that you can easily restore from
 
-`savename`: 
+`savename`: the name of your custom save. Leave blank to be prompted after seeing the current list of saves
 
 ### remove
 `python eldensave.py [-l] [-c] remove [savenames...]`
@@ -53,6 +53,8 @@ _Optional_:
 `savenames`: a list of your custom saves to delete. Leave blank to choose which save to delete after seeing the list
 
 ## Dependencies
+
+* **This program is is only supported for Windows 10**
 
 [Python 3.8](https://www.python.org/downloads/release/python-380/)
 

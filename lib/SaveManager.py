@@ -1,9 +1,14 @@
-import psutil
 import getpass
-from pathlib import Path
-import shutil
 import os
 import pickle
+import shutil
+import sys
+from pathlib import Path
+
+import psutil
+
+# Change working directory to current directory to utilize relative paths more easily
+os.chdir(sys.path[0])
 
 # Internal folders/files to manage save data
 SAVE_DIR = 'saves/'
@@ -75,8 +80,8 @@ class SaveManager:
         path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/path/to/savefile.file')
         while not path.exists():
             custom = True
-            path = Path(input(('Could not find savegame.cmd folder at default location, please enter the full path of '
-                               'your savegame.cmd folder (q to quit): ')))
+            path = Path(input(('Could not find savegame folder at default location, please enter the full path of '
+                               'your savegame folder (q to quit): ')))
             if str(path).strip().startswith('q'):
                 print('Exiting...')
                 exit(0)
