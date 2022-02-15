@@ -2,7 +2,7 @@
 _A save manager for PC games_
 
 ## _About_
-This Python CLI allows you to manage your save folders for PC games.
+This CLI allows you to manage your save folders for PC games. It is written entirely in Python.
 
 Primary features:
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
