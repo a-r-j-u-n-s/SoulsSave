@@ -105,15 +105,15 @@ class SaveManager:
             shutil.rmtree(path)
         shutil.copytree(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
 
-    def load_backup(self, save='userbackup'):
+    def load_backup(self, save='temporary'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
         path = SAVE_DIR + f'/{save}/' + save_name
         try:
-            if Path(path).exists():
-                shutil.rmtree(path)
+            if Path(self.save_path).exists():
+                shutil.rmtree(self.save_path)
             shutil.copytree(path, self.save_path)
-            print(f'{save_name} loaded!')
+            print(f'{save} loaded!')
         except FileNotFoundError:
             if save == 'userbackup':
                 print('You do not have a temporary backup currently saved!')
@@ -130,6 +130,7 @@ class SaveManager:
 
     def __save(self):
         if self.args.b__backup:
+            print('Creating temporary backup...')
             self.create_backup('userbackup')
         else:
             save_name = self.__get_inputted_savename()
@@ -155,6 +156,7 @@ class SaveManager:
                     print(f'{save} deleted')
                 # Re-pickle save data to reflect update
                 self.__pickle_saves()
+            print('done deleting saves!')
 
     def __unpickle_saves(self):
         if os.path.getsize(SAVE_DATA) > 0:
