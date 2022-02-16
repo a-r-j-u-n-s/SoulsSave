@@ -113,7 +113,10 @@ class SaveManager:
             if Path(self.save_path).exists():
                 shutil.rmtree(self.save_path)
             shutil.copytree(path, self.save_path)
-            print(f'{save} loaded!')
+            if save == 'userbackup':
+                print('Temporary backup loaded!')
+            else:
+                print(f'{save} loaded!')
         except FileNotFoundError:
             if save == 'userbackup':
                 print('You do not have a temporary backup currently saved!')
