@@ -105,14 +105,17 @@ class SaveManager:
             shutil.rmtree(path)
         shutil.copytree(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
 
-    def load_backup(self, save='temporary'):
+    def load_backup(self, save='userbackup'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
+        path = SAVE_DIR + f'/{save}/' + save_name
         try:
-            shutil.copytree(SAVE_DIR + f'/{save}/' + save_name, self.save_path)
+            if Path(path).exists():
+                shutil.rmtree(path)
+            shutil.copytree(path, self.save_path)
             print(f'{save_name} loaded!')
         except FileNotFoundError:
-            if save == 'temporary':
+            if save == 'userbackup':
                 print('You do not have a temporary backup currently saved!')
             else:
                 print(f'You do not have a save called "{save}"')
