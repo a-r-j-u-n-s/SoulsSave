@@ -80,7 +80,7 @@ class SaveManager:
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at default location, please enter the full path of '
-                               'your savegame folder (q to quit): ')))
+                               'the savegame folder (q to quit): ')))
             if str(path).strip().startswith('q'):
                 print('Exiting...')
                 exit(0)
