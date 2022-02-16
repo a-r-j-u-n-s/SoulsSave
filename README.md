@@ -9,6 +9,17 @@ Primary features:
 - _Create/restore from a temporary unlabeled backup save_
 - _Add/delete your custom saves easily_
 
+## Dependencies
+
+* **This program is designed for Windows 10**
+
+[Python 3.8](https://www.python.org/downloads/release/python-380/) (you need to install)
+
+[psutil 5.7.0](https://pypi.org/project/psutil/) (installed automatically)
+
+[setuptools 57.0.0](https://pypi.org/project/setuptools/) (installed automatically)
+
+
 ## _Usage_
 
 1. `git clone` or download this repository
@@ -18,7 +29,7 @@ Primary features:
    python -m setup install
    ```
 4. Script is ready for use!
-   1. Verify by seeing if `savegame-manager` appears when you run `pip list`
+   1. Verify by seeing if `savegame-manager` appears as a package when you run `pip list`
 5. _Alternative method_
    1. If `setup.py` is not working, you can still manually use the script from the project directory.
    2. Install dependencies manually
@@ -75,15 +86,6 @@ _Optional_:
 
 `savenames`: a list of your custom saves to delete. Leave blank to choose which save to delete after seeing the list
 
-## Dependencies
-
-* **This program is is only supported for Windows 10**
-
-[Python 3.8](https://www.python.org/downloads/release/python-380/)
-
-[psutil 5.7.0](https://pypi.org/project/psutil/)
-
-[setuptools 57.0.0](https://pypi.org/project/setuptools/)
 
 ## _Current Tasks_
 Version: 1.0
