@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-setup.py
+# setup.py
 
 # .idea files
 **/.idea/workspace.xml **/.idea/tasks.xml
