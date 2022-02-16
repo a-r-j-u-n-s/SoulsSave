@@ -6,7 +6,7 @@ setup(
     scripts=['./scripts/savegame.cmd'],
     author='Arjun Srivastava',
     description='Save folder manager for PC games.',
-    packages=['lib.savegame'],
+    packages=['src.savegame'],
     install_requires=[
         'setuptools',
         'argparse',

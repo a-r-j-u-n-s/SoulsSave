@@ -36,9 +36,9 @@ Primary features:
    ```
     pip install -r requirements.txt
    ```
-   3. Run script with Python directly
+   3. Run script with batch file directly
    ```
-   python /lib/savegame/main.py [args...]
+   ./scripts/savegame.bat
    ```
 
 #### Optional flags
@@ -48,6 +48,8 @@ Primary features:
 `-c`: indicate that you want to script to use your custom savegame location (i.e. not its default installed location)
 
 **There are _three_ primary modes for this script to run in:**
+
+(You must be in the main project directory to use these commands!)
 
 ### load
 ```
@@ -90,6 +92,7 @@ _Optional_:
 ## _Current Tasks_
 Version: 1.0
 - Configure script to work with multiple games!
+- Configure `savegame` module to be usable globally from any directory
 - Publish on [PyPi](https://pypi.org/)
 
 
