@@ -49,7 +49,7 @@ Primary features:
 
 **There are _three_ primary modes for this script to run in:**
 
-(You must be in the main project directory to use these commands!)
+(You must be in the SaveManager project directory to use these commands!)
 
 ### load
 ```
