@@ -91,7 +91,7 @@ _Optional_:
 
 ## _Current Tasks_
 Version: 1.0
-- Configure script to work with multiple games!
+- Configure script to work with multiple games
 - Configure `savegame` module to be usable globally from any directory
 - Publish on [PyPi](https://pypi.org/)
 
