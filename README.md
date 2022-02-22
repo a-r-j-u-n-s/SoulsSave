@@ -1,8 +1,8 @@
 # SaveGame
-_A save manager for PC games_
+_A save manager for [FromSoftware's](https://www.fromsoftware.jp/ww/) video games on PC_
 
 ## _About_
-This CLI allows you to manage your save folders for PC games. It is written entirely in Python.
+This CLI allows you to manage your save folders for various singleplayer games. It is written entirely in Python.
 
 Primary features:
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
@@ -49,7 +49,7 @@ Primary features:
 
 **There are _three_ primary modes for this script to run in:**
 
-(You must be in the SaveManager project directory to use these commands!)
+(Your shell must be in the SaveManager project directory to use these commands!)
 
 ### load
 ```
