@@ -3,6 +3,7 @@ import os
 import pickle
 import shutil
 import sys
+from enum import Enum
 from pathlib import Path
 
 import psutil
@@ -127,7 +128,7 @@ class SaveManager:
     def __remove(self):
         saves_to_remove = self.args.savenames
         if not saves_to_remove:
-            save_to_remove = self.__get_inputted_savename().split()
+            saves_to_remove = self.__get_inputted_savename().split()
         for save in saves_to_remove:
             # Remove from current save data
             if save not in self.saves:
@@ -179,9 +180,12 @@ class SaveManager:
         return path
 
     def __get_inputted_savename(self):
-        save_name = self.args.savename
+        if self.mode == 'remove':  # TODO: Turn modes into enum
+            save_name = self.args.savenames
+        else:
+            save_name = self.args.savename
         if not save_name:
-            save_name = input('Please enter the name of your save: ').strip()
+            save_name = input('Please enter the name of your save(s): ').strip()
         return save_name
 
     @staticmethod
