@@ -52,10 +52,13 @@ class SaveManager:
 
         # If custom location flag, set the game's save location to the user's input
         if not self.__loc:
-            self.save_path = self.get_save_path()
+            self.save_path = self.__get_save_path()
         else:
             with open('game_savepath.txt', 'r') as f:
                 self.save_path = Path(f.read().strip().lstrip('/'))
+                if not self.save_path.exists():
+                    print('Custom savefile location does not exist, exiting...')
+                    exit(1)
 
         self.create_backup()  # Create every time program runs
 
@@ -69,28 +72,6 @@ class SaveManager:
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
 
-    def get_save_path(self) -> Path:
-        """
-        Retrieves expected location or asks user to input custom location of their savegame.cmd
-        """
-        custom = False
-        print('Checking default game save location...')
-
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/Game/path/to/savefile.file')
-        while not path.exists():
-            custom = True
-            path = Path(input(('Could not find savegame folder at default location, please enter the full path of '
-                               'the savegame folder (q to quit): ')))
-            if str(path).strip().startswith('q'):
-                print('Exiting...')
-                exit(0)
-        if custom:
-            print('Storing new game save location...')
-            with open('game_savepath.txt', 'w') as f:
-                f.write(str(path))
-        print('Save location found!')
-        return path
-
     def print_user_saves(self):
         print('Saves:')
         for save in self.saves.values():
@@ -103,7 +84,7 @@ class SaveManager:
         os.makedirs(os.path.dirname(path), exist_ok=True)
         if Path(path).exists():
             shutil.rmtree(path)
-        shutil.copytree(self.save_path, SAVE_DIR + f'/{mode}/' + save_name)
+        shutil.copytree(self.save_path, path)
 
     def load_backup(self, save='temporary'):
         save_name = self.format_file_name(self.save_path)
@@ -146,29 +127,56 @@ class SaveManager:
     def __remove(self):
         saves_to_remove = self.args.savenames
         if not saves_to_remove:
-            print('(unimplemented)')
-        else:
-            for save in saves_to_remove:
-                # Remove from current save data
-                if save not in self.saves:
-                    print(f'{save} is not one of your saves, skipping...')
-                else:
-                    print(f'deleting {save}...')
-                    del self.saves[save]
-                    shutil.rmtree(SAVE_DIR + save)
-                    print(f'{save} deleted')
-                # Re-pickle save data to reflect update
-                self.__pickle_saves()
-            print('done deleting saves!')
+            save_to_remove = self.__get_inputted_savename().split()
+        for save in saves_to_remove:
+            # Remove from current save data
+            if save not in self.saves:
+                print(f'{save} is not one of your saves, skipping...')
+            else:
+                print(f'deleting {save}...')
+                del self.saves[save]
+                shutil.rmtree(SAVE_DIR + save)
+                print(f'{save} deleted')
+            # Re-pickle save data to reflect update
+            self.__pickle_saves()
+        print('done deleting saves!')
 
     def __unpickle_saves(self):
+        """
+        Read custom save data from file
+        """
         if os.path.getsize(SAVE_DATA) > 0:
             with open(SAVE_DATA, "rb") as f:
                 self.saves = pickle.load(f)
 
     def __pickle_saves(self):
+        """
+        Serialize custom save data to a file to be read from later
+        """
         with open(SAVE_DATA, "wb") as f:
             pickle.dump(self.saves, f)
+
+    def __get_save_path(self) -> Path:
+        """
+        Retrieves expected location or asks user to input custom location of their savegame
+        """
+        custom = False
+        print('Checking default game save location...')
+
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/Game/path/to/savefile.file')
+        while not path.exists():
+            custom = True
+            path = Path(input(('Could not find savegame folder at current path, please enter the full path of '
+                               'the savegame folder (q to quit): ')))
+            if str(path).strip().startswith('q'):
+                print('Exiting...')
+                exit(0)
+        if custom:
+            print('Storing new game save location...')
+            with open('game_savepath.txt', 'w') as f:
+                f.write(str(path))
+        print('Save location found!')
+        return path
 
     def __get_inputted_savename(self):
         save_name = self.args.savename
