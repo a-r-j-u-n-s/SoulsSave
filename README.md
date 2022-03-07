@@ -2,7 +2,7 @@
 _A save manager for [FromSoftware's](https://www.fromsoftware.jp/ww/) video games on PC_
 
 ## _About_
-This CLI allows you to manage your save folders for various singleplayer games. It is written entirely in Python.
+This Python CLI allows you to manage your save folders for various singleplayer games.
 
 Primary features:
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
