@@ -164,7 +164,7 @@ class SaveManager:
         custom = False
         print('Checking default game save location...')
 
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/Game/path/to/savefile.file')
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/76561198149529104/')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at current path, please enter the full path of '
