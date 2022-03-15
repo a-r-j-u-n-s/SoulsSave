@@ -3,7 +3,7 @@ import os
 import pickle
 import shutil
 import sys
-from enum import Enum
+import re
 from pathlib import Path
 
 import psutil
@@ -164,7 +164,7 @@ class SaveManager:
         custom = False
         print('Checking default game save location...')
 
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/76561198149529104/')
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at current path, please enter the full path of '
@@ -172,6 +172,14 @@ class SaveManager:
             if str(path).strip().startswith('q'):
                 print('Exiting...')
                 exit(0)
+            # Check for GraphicsConfig file and 17-digit Steam ID to verify folder
+            if os.path.exists(f'{path}/GraphicsConfig.xml') and len(
+                    re.findall(r'\d{17}', str(os.listdir(path)))) > 0:
+                break
+            else:
+                print('Cant find savedata in this Directory. The selected folder should contain GraphicsConfig.xml '
+                      'and a folder named after your 17 digit SteamID')
+                continue
         if custom:
             print('Storing new game save location...')
             with open('game_savepath.txt', 'w') as f:
@@ -180,7 +188,7 @@ class SaveManager:
         return path
 
     def __get_inputted_savename(self):
-        if self.mode == 'remove':  # TODO: Turn modes into enum
+        if self.mode == 'remove':
             save_name = self.args.savenames
         else:
             save_name = self.args.savename
