@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='savegame-manager',
-    version='1.0.1',
+    version='1.0.2',
     scripts=['./scripts/savegame.cmd'],
     author='Arjun Srivastava',
     description='Save folder manager for PC games.',
