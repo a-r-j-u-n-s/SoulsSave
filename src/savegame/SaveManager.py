@@ -1,11 +1,12 @@
 import getpass
+import zipfile
+import zlib
 import os
 import pickle
 import shutil
 import sys
 import re
 from pathlib import Path
-
 import psutil
 
 # Change working directory to current directory to utilize relative paths more easily
@@ -82,19 +83,15 @@ class SaveManager:
     def create_backup(self, mode='temporary'):
         save_name = self.format_file_name(self.save_path)
         path = SAVE_DIR + f'/{mode}/' + save_name
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        if Path(path).exists():
-            shutil.rmtree(path)
-        shutil.copytree(self.save_path, path)
+        # Compression (need to pass .zip file)
+        self.__compress_folder(self.save_path, path + '.zip')
 
     def load_backup(self, save='temporary'):
         save_name = self.format_file_name(self.save_path)
         os.makedirs(os.path.dirname(self.save_path), exist_ok=True)
         path = SAVE_DIR + f'/{save}/' + save_name
         try:
-            if Path(self.save_path).exists():
-                shutil.rmtree(self.save_path)
-            shutil.copytree(path, self.save_path)
+            self.__uncompress_folder(self.save_path, path + '.zip')
             if save == 'userbackup':
                 print('Temporary backup loaded!')
             else:
@@ -224,10 +221,20 @@ class SaveManager:
         formatted = str(file).split('\\')[-1]
         return formatted
 
+    @staticmethod
+    def __compress_folder(gamesave_path: Path, usersave_path: str):
+        with zipfile.ZipFile(usersave_path, mode='w', compression=zipfile.ZIP_DEFLATED) as usersave_zip:
+            for file_path in gamesave_path.rglob('*'):
+                usersave_zip.write(file_path, arcname=file_path.relative_to(gamesave_path))
+
+    @staticmethod
+    def __uncompress_folder(gamesave_path: Path, usersave_path: str):
+        with zipfile.ZipFile(usersave_path, mode='r', compression=zipfile.ZIP_DEFLATED) as usersave_zip:
+            usersave_zip.extractall(gamesave_path)
+
     """
     Represents an individual save
     """
-
     class Save:
         def __init__(self,
                      outer_instance,
