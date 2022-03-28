@@ -114,6 +114,7 @@ class SaveManager:
         if self.args.b__backup:
             print('Creating temporary backup...')
             self.create_backup('userbackup')
+            print('Created user backup!')
         else:
             save_name = self.__get_inputted_savename()
             save_description = input('Please enter a brief description of your save: ').strip()
