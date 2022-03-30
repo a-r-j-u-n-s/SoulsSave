@@ -42,8 +42,6 @@ class SaveManager:
     def start(self):
         # Load current save data from serialized savedata
         self.__unpickle_saves()
-        # if not self.saves:
-        #     print('Save data currently empty...')
 
         # List all current user saves
         if self.args.list:
@@ -76,8 +74,11 @@ class SaveManager:
 
     def print_user_saves(self):
         print('Saves:')
-        for save in self.saves.values():
-            print(str(save))
+        if not self.saves:
+            print('Save data currently empty...')
+        else:
+            for save in self.saves.values():
+                print(str(save))
         print(75 * '-')
 
     def create_backup(self, mode='temporary'):
