@@ -1,5 +1,7 @@
-# Testing directories
-/savefolder_test/
+# Save directories
+/src/savegame/saves/
+
+/src/savegame/game_savepath.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
