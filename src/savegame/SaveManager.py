@@ -15,6 +15,7 @@ os.chdir(sys.path[0])
 # Internal folders/files to manage save data
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
+GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing'}
 
 
 class SaveManager:
@@ -38,10 +39,13 @@ class SaveManager:
         self.args = args
         self.saves = {}
         self.save = None
+        self.game = 'Dark Souls 3'
 
     def start(self):
         # Load current save data from serialized savedata
         self.__unpickle_saves()
+
+        print(f'**Current game: {self.game}**')
 
         # List all current user saves
         if self.args.list:
@@ -162,8 +166,8 @@ class SaveManager:
         """
         custom = False
         print('Checking default game save location...')
-
-        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/EldenRing/')
+        game = GAMES[self.game]
+        path = Path(f'C:/Users/{self.__user}/AppData/Roaming/{game}/')
         while not path.exists():
             custom = True
             path = Path(input(('Could not find savegame folder at current path, please enter the full path of '
