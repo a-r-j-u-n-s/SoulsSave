@@ -45,4 +45,9 @@ Combo = ttk.Combobox(frame, values=game_list)
 Combo.set("Choose a game")
 Combo.pack(padx=5, pady=5)
 
+# Add checkbox for temporary saves
+Var1 = BooleanVar()
+ChkBttn = Checkbutton(frame, width=15, variable=Var1, text='Temporary Save')
+ChkBttn.pack(padx=5, pady=5)
+
 root.mainloop()
