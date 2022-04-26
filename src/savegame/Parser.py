@@ -1,6 +1,6 @@
 import argparse
 
-MODES = ['load', 'save', 'remove']
+MODES = ['load', 'save', 'remove', 'gui']
 
 
 class ArgParser:
@@ -14,8 +14,6 @@ class ArgParser:
                                  action='store_true')
         self.parser.add_argument('-l', '--list', help='list all current saves', action='store_true')
 
-        # Run in CLI mode (default GUI)
-        self.parser.add_argument('--cli', help='run savemanager in CLI mode', action='store_true')
 
         # self.parser.add_argument('-s', '--set-location', help="set the location of your game's save file manually (
         # if you think your installation is NOT on your main C: drive)", action='store_true')
@@ -34,6 +32,11 @@ class ArgParser:
                                  help='name of save',
                                  nargs='?'
                                  )
+
+        # Run in GUI mode (default CLI)
+        gui_parser = subparsers.add_parser('gui',
+                                           help='use this command to run the savegame manager with a graphical user interface',
+                                           description='run savemanager in GUI mode')
 
         # Restore a save from one of the backups
         load_parser = subparsers.add_parser('load',

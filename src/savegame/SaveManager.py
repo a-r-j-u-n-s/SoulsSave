@@ -68,8 +68,8 @@ class SaveManager:
         print(f'**Current game: {self.game}**\n')
 
         # If --cli flag is false, set up GUI
-        if not self.args.cli:
-            print('GUI mode selected\n')
+        if self.mode == 'gui':
+            print('GUI mode selected')
             self.start_gui()
         else:
             print('CLI mode selected\n')
@@ -80,37 +80,69 @@ class SaveManager:
             elif self.mode == 'remove':
                 self.__remove()
 
+    # TODO: break up this function
+            # outer keys to store game names in saves object data, use based on current game
+            # Update whenever Save button is pressed
+            # Add progress/success message
+            # Add remove button
+            # Add image that changes based on name
+            # Reformat
     def start_gui(self):
+        print('Running...')
         def save():
             print('save mode')
 
         def load():
             print('load mode')
 
+        def kill():
+            print('Exiting...')
+            root.destroy()
+
+        # Callback function for updating clickable buttons
+        # TODO: Split into individual callback functions for each element that updates buttons
+        def update_buttons(event=None):
+            save_value = None
+            for i in listbox.curselection():
+                save_value = listbox.get(i)
+            if use_temporary.get() or save_value:
+                save_btn['state'] = NORMAL
+                load_btn['state'] = NORMAL
+            else:
+                save_btn['state'] = DISABLED
+                load_btn['state'] = DISABLED
+
+        def validate_new_save():
+            if new_save_name.get():
+                save_btn['state'] = NORMAL
+                return True
+
+        # Set up GUI window
         root = Tk()
-        root.geometry("500x300")
+        root.title('SoulsSave')
+        root.geometry("500x400")
         frame = Frame(root)
         frame.pack()
 
-        mainmenu = Menu(frame)
-        mainmenu.add_command(label="Save", command=save)
-        mainmenu.add_command(label="Load", command=load)
-        mainmenu.add_command(label="Exit", command=root.destroy)
+        # newsave_label = Label(root, text="New Save:")
+        # newsave_label.pack(padx=5, pady=5)
 
-        root.config(menu=mainmenu)
+        main_menu = Menu(frame)
+        main_menu.add_command(label="Save", command=save)
+        main_menu.add_command(label="Load", command=load)
+        main_menu.add_command(label="Exit", command=kill)
 
-        label = Label(root, text="Your Saves")
-        label.pack()
+        root.config(menu=main_menu)
 
-        listbox = Listbox(root)
+        saves_label = Label(root, text="Your Saves")
+        saves_label.pack()
+
+        listbox = Listbox(root, width=40)
 
         # Generate with for loop over list of serialized saves by name
-        listbox.insert(1, "Bread")
-        listbox.insert(2, "Milk")
-        listbox.insert(3, "Meat")
-        listbox.insert(4, "Cheese")
-        listbox.insert(5, "Vegetables")
-
+        for i, save in enumerate(self.saves.values()):
+            listbox.insert(i, save.name + f': {save.description}')
+        listbox.bind('<<ListboxSelect>>', update_buttons)
         listbox.pack()
 
         # Game select combobox (normalize with game list in SaveManager)
@@ -122,14 +154,28 @@ class SaveManager:
         Combo.pack(padx=5, pady=5)
 
         # Add checkbox for temporary saves
-        Var1 = BooleanVar()
-        ChkBttn = Checkbutton(frame, width=15, variable=Var1, text='Temporary Save')
-        ChkBttn.pack(padx=5, pady=5)
+        use_temporary = BooleanVar()
+        temporary_btn = Checkbutton(frame, width=15, variable=use_temporary, text='Temporary Save', command=update_buttons)
+        temporary_btn.pack(padx=5, pady=5)
 
         # New save
-        new_save = Entry(frame, width=20)
-        new_save.insert(0, 'Enter new save name')
+        new_save_name = StringVar()
+        new_save = Entry(frame, width=20, textvariable=new_save_name, validate="focusout", validatecommand=validate_new_save)
+        new_save.insert(0, 'new save name')
+        new_save.bind('')
         new_save.pack(padx=5, pady=5)
+
+        new_save_desc = Text(frame, width=20, height=3)
+        new_save_desc.insert(END, 'save description')
+        new_save_desc.pack(padx=5, pady=5)
+
+        # Load button
+        load_btn = Button(frame, text='Load', state=DISABLED, padx=20, pady=5)
+        load_btn.pack(side=RIGHT, padx=5, pady=5)
+
+        # Save button
+        save_btn = Button(frame, text='Save', state=DISABLED, padx=20, pady=5)
+        save_btn.pack(side=RIGHT, padx=5, pady=5)
 
         root.mainloop()
 
