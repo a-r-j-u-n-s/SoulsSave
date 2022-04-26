@@ -1,17 +1,19 @@
-# SaveGame
+# SoulsSave
 _A save manager for [FromSoftware's](https://www.fromsoftware.jp/ww/) video games on PC_
 
 ## _About_
-This Python CLI allows you to manage your save folders for various singleplayer games.
+This Python CLI/GUI allows you to manage your save folders for various singleplayer games.
 
 Primary features:
+- _Currently supports Elden Ring, Sekiro, and Dark Souls III_
 - _Create multiple labeled backups of your savegame with custom names/descriptions for reference_
 - _Create/restore from a temporary unlabeled backup save_
-- _Add/delete your custom saves easily_
+- _Create/delete custom saves easily_
+- _Use GUI or CLI based on your preference_
 
 ## Dependencies
 
-* **This program is designed for Windows 10**
+* **This program is designed for Windows 10/11**
 
 [Python 3.8](https://www.python.org/downloads/release/python-380/) (you need to install)
 

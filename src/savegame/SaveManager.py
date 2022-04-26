@@ -14,7 +14,7 @@ from tkinter import ttk
 # Change working directory to current directory to utilize relative paths more easily
 os.chdir(sys.path[0])
 
-# Internal folders/files to manage save data
+# Internal folders/files/globals to manage save data
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
 GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing', 'Sekiro': 'Sekiro'}
@@ -24,10 +24,8 @@ GAME_NAMES = GAMES.keys()
 class SaveManager:
     """
     Save Manager
-
-    - add function to restore automatic temporary backup
-    - flush temporaries if file name changes?
-    - change custom -c flag logic to be more intuitive
+    --cli: runs in CLI mode
+    Default mode is GUI
     """
 
     def __init__(self,
@@ -48,20 +46,12 @@ class SaveManager:
         # Load current save data from serialized savedata
         self.__unpickle_saves()
 
-        # If --cli flag is false, set up GUI
-        if not self.args.cli:
-            print('GUI mode selected\n')
-        else:
-            print('CLI mode selected\n')
-
-        print(f'**Current game: {self.game}**\n')
+        # Create custom directory structure for storing saves
+        self.__create_save_dirs()
 
         # List all current user saves
         if self.args.list:
             self.print_user_saves()
-
-        # Create custom directory structure for storing saves
-        self.__create_save_dirs()
 
         # If custom location flag, set the game's save location to the user's input
         if not self.__loc:
@@ -75,12 +65,73 @@ class SaveManager:
 
         self.create_backup()  # Create every time program runs
 
-        if self.mode == 'load':
-            self.__load()
-        elif self.mode == 'save':
-            self.__save()
-        elif self.mode == 'remove':
-            self.__remove()
+        print(f'**Current game: {self.game}**\n')
+
+        # If --cli flag is false, set up GUI
+        if not self.args.cli:
+            print('GUI mode selected\n')
+            self.start_gui()
+        else:
+            print('CLI mode selected\n')
+            if self.mode == 'load':
+                self.__load()
+            elif self.mode == 'save':
+                self.__save()
+            elif self.mode == 'remove':
+                self.__remove()
+
+    def start_gui(self):
+        def save():
+            print('save mode')
+
+        def load():
+            print('load mode')
+
+        root = Tk()
+        root.geometry("500x300")
+        frame = Frame(root)
+        frame.pack()
+
+        mainmenu = Menu(frame)
+        mainmenu.add_command(label="Save", command=save)
+        mainmenu.add_command(label="Load", command=load)
+        mainmenu.add_command(label="Exit", command=root.destroy)
+
+        root.config(menu=mainmenu)
+
+        label = Label(root, text="Your Saves")
+        label.pack()
+
+        listbox = Listbox(root)
+
+        # Generate with for loop over list of serialized saves by name
+        listbox.insert(1, "Bread")
+        listbox.insert(2, "Milk")
+        listbox.insert(3, "Meat")
+        listbox.insert(4, "Cheese")
+        listbox.insert(5, "Vegetables")
+
+        listbox.pack()
+
+        # Game select combobox (normalize with game list in SaveManager)
+        # Also need a load_image() function to change the image based on the game
+        game_list = ["Elden Ring", "Sekiro", "Dark Souls III"]
+
+        Combo = ttk.Combobox(frame, values=game_list)
+        Combo.set(self.game)
+        Combo.pack(padx=5, pady=5)
+
+        # Add checkbox for temporary saves
+        Var1 = BooleanVar()
+        ChkBttn = Checkbutton(frame, width=15, variable=Var1, text='Temporary Save')
+        ChkBttn.pack(padx=5, pady=5)
+
+        # New save
+        new_save = Entry(frame, width=20)
+        new_save.insert(0, 'Enter new save name')
+        new_save.pack(padx=5, pady=5)
+
+        root.mainloop()
 
     def create_save(self, name, description):
         return SaveManager.Save(outer_instance=self, name=name, description=description)
