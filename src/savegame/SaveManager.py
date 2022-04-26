@@ -82,11 +82,11 @@ class SaveManager:
 
     # TODO: break up this function
             # outer keys to store game names in saves object data, use based on current game
-            # Update whenever Save button is pressed
+            # Update whenever Save/Remove button is pressed
             # Add progress/success message
-            # Add remove button
             # Add image that changes based on name
-            # Reformat
+            # Reformat positioning
+            # Add scroll bar sideways and updown for listbox
     def start_gui(self):
         print('Running...')
         def save():
@@ -95,12 +95,15 @@ class SaveManager:
         def load():
             print('load mode')
 
+        def remove():
+            pass
+
         def kill():
             print('Exiting...')
             root.destroy()
 
         # Callback function for updating clickable buttons
-        # TODO: Split into individual callback functions for each element that updates buttons
+        # TODO: Split into individual callback functions for check box and listbox
         def update_buttons(event=None):
             save_value = None
             for i in listbox.curselection():
@@ -108,14 +111,20 @@ class SaveManager:
             if use_temporary.get() or save_value:
                 save_btn['state'] = NORMAL
                 load_btn['state'] = NORMAL
+                remove_btn['state'] = NORMAL if save_value else DISABLED
             else:
                 save_btn['state'] = DISABLED
                 load_btn['state'] = DISABLED
+                remove_btn['state'] = DISABLED
 
+        # Turns on Save button if user inputted a new save name
         def validate_new_save():
             if new_save_name.get():
                 save_btn['state'] = NORMAL
                 return True
+            else:
+                update_buttons()
+                return False
 
         # Set up GUI window
         root = Tk()
@@ -176,6 +185,10 @@ class SaveManager:
         # Save button
         save_btn = Button(frame, text='Save', state=DISABLED, padx=20, pady=5)
         save_btn.pack(side=RIGHT, padx=5, pady=5)
+
+        # Remove button
+        remove_btn = Button(frame, text='Remove', state=DISABLED, padx=20, pady=5)
+        remove_btn.pack(side=RIGHT, padx=5, pady=5)
 
         root.mainloop()
 
