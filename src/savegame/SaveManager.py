@@ -8,6 +8,8 @@ import sys
 import re
 from pathlib import Path
 import psutil
+from tkinter import *
+from tkinter import ttk
 
 # Change working directory to current directory to utilize relative paths more easily
 os.chdir(sys.path[0])
@@ -16,6 +18,7 @@ os.chdir(sys.path[0])
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
 GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing', 'Sekiro': 'Sekiro'}
+GAME_NAMES = GAMES.keys()
 
 
 class SaveManager:
@@ -45,7 +48,13 @@ class SaveManager:
         # Load current save data from serialized savedata
         self.__unpickle_saves()
 
-        print(f'**Current game: {self.game}**')
+        # If --cli flag is false, set up GUI
+        if not self.args.cli:
+            print('GUI mode selected\n')
+        else:
+            print('CLI mode selected\n')
+
+        print(f'**Current game: {self.game}**\n')
 
         # List all current user saves
         if self.args.list:

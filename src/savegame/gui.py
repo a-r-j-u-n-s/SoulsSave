@@ -11,7 +11,6 @@ def load():
     # Code to be written
     pass
 
-
 root = Tk()
 root.geometry("200x150")
 frame = Frame(root)
