@@ -10,7 +10,8 @@ setup(
     install_requires=[
         'setuptools',
         'argparse',
-        'psutil>=5.7.0'
+        'psutil>=5.7.0',
+        'tkinter'
     ],
     python_requires='>=3.8'
 )

@@ -15,7 +15,7 @@ os.chdir(sys.path[0])
 # Internal folders/files to manage save data
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
-GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing'}
+GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing', 'Sekiro': 'Sekiro'}
 
 
 class SaveManager:
