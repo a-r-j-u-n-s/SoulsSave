@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 import psutil
 from tkinter import *
+from tkinter import messagebox
 from tkinter import ttk
 
 # Change working directory to current directory to utilize relative paths more easily
@@ -86,17 +87,24 @@ class SaveManager:
             # Add progress/success message
             # Add image that changes based on name
             # Reformat positioning
-            # Add scroll bar sideways and updown for listbox
     def start_gui(self):
         print('Running...')
         def save():
-            print('save mode')
+            save_value = None
+            for i in listbox.curselection():
+                save_value = listbox.get(i)
+            if save_value:
+                # TODO: Do save logic...
+                update_savelist()
+            elif use_temporary.get():
+                self.create_backup('userbackup')
+                messagebox.showinfo('Success', 'Temporary backup saved!')   # TODO: Make message destroy itself
 
         def load():
             print('load mode')
 
         def remove():
-            pass
+            update_savelist()
 
         def kill():
             print('Exiting...')
@@ -126,32 +134,46 @@ class SaveManager:
                 update_buttons()
                 return False
 
-        # Set up GUI window
+        # Callback function to run whenever a save is saved or removed
+        def update_savelist():
+            saves = listbox.get(0, END)
+            for i, save_object in enumerate(self.saves.values()):
+                if str(save_object) not in saves:
+                    listbox.insert(i, save_object.name + f': {save_object.description}')
+
+        # Set up GUI window root and main frame
         root = Tk()
         root.title('SoulsSave')
         root.geometry("500x400")
         frame = Frame(root)
         frame.pack()
 
-        # newsave_label = Label(root, text="New Save:")
-        # newsave_label.pack(padx=5, pady=5)
-
+        # Main menu
         main_menu = Menu(frame)
-        main_menu.add_command(label="Save", command=save)
-        main_menu.add_command(label="Load", command=load)
         main_menu.add_command(label="Exit", command=kill)
-
         root.config(menu=main_menu)
 
         saves_label = Label(root, text="Your Saves")
         saves_label.pack()
 
-        listbox = Listbox(root, width=40)
+        # Frame for saves
+        saves_frame = Frame(root)
+        saves_frame.pack()
+
+        listbox = Listbox(saves_frame, width=50, height=10)
 
         # Generate with for loop over list of serialized saves by name
-        for i, save in enumerate(self.saves.values()):
-            listbox.insert(i, save.name + f': {save.description}')
+        update_savelist()
         listbox.bind('<<ListboxSelect>>', update_buttons)
+
+        # Set up horizontal and vertical scroll bars
+        listbox_sb = Scrollbar(saves_frame, orient=HORIZONTAL)
+        listbox_vb = Scrollbar(saves_frame, orient=VERTICAL)
+        listbox_sb.pack(fill=X, side=BOTTOM)
+        listbox_vb.pack(fill=Y, side=RIGHT)
+        listbox.configure(xscrollcommand=listbox_sb.set, yscrollcommand=listbox_vb.set)
+        listbox_sb.config(command=listbox.xview)
+        listbox_vb.config(command=listbox.yview)
         listbox.pack()
 
         # Game select combobox (normalize with game list in SaveManager)
@@ -171,7 +193,6 @@ class SaveManager:
         new_save_name = StringVar()
         new_save = Entry(frame, width=20, textvariable=new_save_name, validate="focusout", validatecommand=validate_new_save)
         new_save.insert(0, 'new save name')
-        new_save.bind('')
         new_save.pack(padx=5, pady=5)
 
         new_save_desc = Text(frame, width=20, height=3)
@@ -183,13 +204,14 @@ class SaveManager:
         load_btn.pack(side=RIGHT, padx=5, pady=5)
 
         # Save button
-        save_btn = Button(frame, text='Save', state=DISABLED, padx=20, pady=5)
+        save_btn = Button(frame, text='Save', state=DISABLED, padx=20, pady=5, command=save)
         save_btn.pack(side=RIGHT, padx=5, pady=5)
 
         # Remove button
         remove_btn = Button(frame, text='Remove', state=DISABLED, padx=20, pady=5)
         remove_btn.pack(side=RIGHT, padx=5, pady=5)
 
+        # Start GUI loop
         root.mainloop()
 
     def create_save(self, name, description):
