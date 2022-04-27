@@ -83,25 +83,41 @@ class SaveManager:
 
     # TODO: break up this function
             # outer keys to store game names in saves object data, use based on current game
-            # Update whenever Save/Remove button is pressed
-            # Add progress/success message
+            # Add progress/success message and error messages
             # Add image that changes based on name
             # Reformat positioning
+            # Wrap getting save name in function
     def start_gui(self):
         print('Running...')
+
         def save():
-            save_value = None
-            for i in listbox.curselection():
-                save_value = listbox.get(i)
-            if save_value:
-                # TODO: Do save logic...
-                update_savelist()
-            elif use_temporary.get():
+            if use_temporary.get():
                 self.create_backup('userbackup')
-                messagebox.showinfo('Success', 'Temporary backup saved!')   # TODO: Make message destroy itself
+                messagebox.showinfo('Success', 'Temporary backup saved!')
+            else:
+                for i in listbox.curselection():
+                    save_value = listbox.get(i)
+                save_value = new_save_name.get()
+                save_desc = 1  # new_save_desc.get()
+                if save_value:
+                    new_save_object = self.create_save(save_value, save_desc)
+                    self.saves[save_value] = new_save_object
+                    self.__pickle_saves()
+                    messagebox.showinfo('Success', f'{save_value} saved!')
+                    update_savelist()
 
         def load():
-            print('load mode')
+            if use_temporary.get():
+                self.load_backup('userbackup')
+                messagebox.showinfo('Success', 'Temporary backup loaded!')
+            else:
+                save_value = None
+                for i in listbox.curselection():
+                    save_value = listbox.get(i)
+                if save_value:
+                    self.load_backup(save_value)
+                    messagebox.showinfo('Success', f'{save_value} load!')
+                    update_savelist()
 
         def remove():
             update_savelist()
@@ -200,7 +216,7 @@ class SaveManager:
         new_save_desc.pack(padx=5, pady=5)
 
         # Load button
-        load_btn = Button(frame, text='Load', state=DISABLED, padx=20, pady=5)
+        load_btn = Button(frame, text='Load', state=DISABLED, padx=20, pady=5, command=load)
         load_btn.pack(side=RIGHT, padx=5, pady=5)
 
         # Save button
@@ -208,7 +224,7 @@ class SaveManager:
         save_btn.pack(side=RIGHT, padx=5, pady=5)
 
         # Remove button
-        remove_btn = Button(frame, text='Remove', state=DISABLED, padx=20, pady=5)
+        remove_btn = Button(frame, text='Remove', state=DISABLED, padx=20, pady=5, command=remove)
         remove_btn.pack(side=RIGHT, padx=5, pady=5)
 
         # Start GUI loop
