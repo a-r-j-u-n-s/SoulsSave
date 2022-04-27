@@ -21,12 +21,12 @@ SAVE_DATA = SAVE_DIR + 'savedata'
 GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing', 'Sekiro': 'Sekiro'}
 GAME_NAMES = GAMES.keys()
 
-
+# TODO: Interfacing, reorganize functions to avoid repeated code in GUI section
 class SaveManager:
     """
     Save Manager
-    --cli: runs in CLI mode
-    Default mode is GUI
+    gui: runs graphical user interface
+    save, remove, load: run command line interface
     """
 
     def __init__(self,
@@ -87,6 +87,7 @@ class SaveManager:
             # Add image that changes based on name
             # Reformat positioning
             # Wrap getting save name in function
+            # Refactor and interface
     def start_gui(self):
         print('Running...')
 
@@ -95,10 +96,12 @@ class SaveManager:
                 self.create_backup('userbackup')
                 messagebox.showinfo('Success', 'Temporary backup saved!')
             else:
+                save_value = None
                 for i in listbox.curselection():
                     save_value = listbox.get(i)
-                save_value = new_save_name.get()
-                save_desc = 1  # new_save_desc.get()
+                if not save_value:
+                    save_value = new_save_name.get()
+                save_desc = 1  # new_save_desc.get() # TODO: figure out description
                 if save_value:
                     new_save_object = self.create_save(save_value, save_desc)
                     self.saves[save_value] = new_save_object
@@ -120,7 +123,20 @@ class SaveManager:
                     update_savelist()
 
         def remove():
-            update_savelist()
+            save_value = None
+            for i in listbox.curselection():
+                save_value = listbox.get(i)
+            if save_value:
+                # TODO: extract save name from save_value (which is a name/desc combo)
+                print(f'deleting {save_value}...')
+                del self.saves[save_value]
+                shutil.rmtree(SAVE_DIR + save_value)
+                messagebox.showinfo('Success', f'{save_value} deleted!')
+                # Re-pickle save data to reflect update
+                self.__pickle_saves()
+                update_savelist()
+            else:
+                messagebox.showinfo('Failure', 'You must select a save to delete')
 
         def kill():
             print('Exiting...')
@@ -196,9 +212,9 @@ class SaveManager:
         # Also need a load_image() function to change the image based on the game
         game_list = ["Elden Ring", "Sekiro", "Dark Souls III"]
 
-        Combo = ttk.Combobox(frame, values=game_list)
-        Combo.set(self.game)
-        Combo.pack(padx=5, pady=5)
+        game_combobox = ttk.Combobox(frame, values=game_list)
+        game_combobox.set(self.game)
+        game_combobox.pack(padx=5, pady=5)
 
         # Add checkbox for temporary saves
         use_temporary = BooleanVar()
