@@ -14,10 +14,6 @@ class ArgParser:
                                  action='store_true')
         self.parser.add_argument('-l', '--list', help='list all current saves', action='store_true')
 
-
-        # self.parser.add_argument('-s', '--set-location', help="set the location of your game's save file manually (
-        # if you think your installation is NOT on your main C: drive)", action='store_true')
-
         # Define subparsers
         subparsers = self.parser.add_subparsers(dest='mode')
 
