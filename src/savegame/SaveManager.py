@@ -101,13 +101,16 @@ class SaveManager:
                     save_value = listbox.get(i)
                 if not save_value:
                     save_value = new_save_name.get()
+                    if ':' in save_value:
+                        messagebox.showerror('Failed', 'Save name cannot include ":" character')
+                        return
                 save_desc = new_save_desc.get(1.0, END)  # Retrieve description from description TextArea
                 if save_value:
                     new_save_object = self.create_save(save_value, save_desc)
                     self.saves[save_value] = new_save_object
                     self.__pickle_saves()
                     messagebox.showinfo('Success', f'{save_value} saved!')
-                    update_savelist()
+                    update_savelist('save')
 
         def load():
             if use_temporary.get():
@@ -119,28 +122,33 @@ class SaveManager:
                     save_value = listbox.get(i)
                 if save_value:
                     self.load_backup(save_value)
-                    messagebox.showinfo('Success', f'{save_value} load!')
-                    update_savelist()
+                    messagebox.showinfo('Success', f'{save_value} loaded!')
+                    update_savelist('save')
 
         def remove():
             save_value = None
             for i in listbox.curselection():
                 save_value = listbox.get(i)
             if save_value:
-                # TODO: extract save name from save_value (which is a name/desc combo)
-                print(f'deleting {save_value}...')
-                del self.saves[save_value]
-                shutil.rmtree(SAVE_DIR + save_value)
-                messagebox.showinfo('Success', f'{save_value} deleted!')
+                # extract save name from save_value (which is a name/desc combo)
+                save_name = extract_save_name(save_value)
+                print(f'deleting {save_name}...')
+                del self.saves[save_name]
+                print(f'{save_name} deleted')
+                shutil.rmtree(SAVE_DIR + save_name)
+                messagebox.showinfo('Success', f'{save_name} deleted!')
                 # Re-pickle save data to reflect update
                 self.__pickle_saves()
-                update_savelist()
+                update_savelist('remove')
             else:
-                messagebox.showinfo('Failure', 'You must select a save to delete')
+                messagebox.showerror('Failure', 'You must select a save to delete')
 
         def kill():
             print('Exiting...')
             root.destroy()
+
+        def extract_save_name(save_value):
+            return save_value.split(':')[0]
 
         # Callback function for updating clickable buttons
         # TODO: Split into individual callback functions for check box and listbox
@@ -167,11 +175,18 @@ class SaveManager:
                 return False
 
         # Callback function to run whenever a save is saved or removed
-        def update_savelist():
-            saves = listbox.get(0, END)
-            for i, save_object in enumerate(self.saves.values()):
-                if str(save_object) not in saves:
-                    listbox.insert(i, save_object.name + f': {save_object.description}')
+        def update_savelist(mode):
+            listbox_saves = listbox.get(0, END)
+            if mode == 'save':
+                for i, save_object in enumerate(self.saves.values()):
+                    if str(save_object) not in listbox_saves:
+                        listbox.insert(i, save_object.name + f': {save_object.description}')
+            elif mode == 'remove':
+                save_names = [str(current_save_name) for current_save_name in self.saves.keys()]
+                for current_save_value in listbox_saves:
+                    current_save = extract_save_name(current_save_value)
+                    if current_save not in save_names:
+                        listbox.delete(listbox.get(0, END).index(current_save_value))   
 
         # Set up GUI window root and main frame
         root = Tk()
@@ -195,7 +210,7 @@ class SaveManager:
         listbox = Listbox(saves_frame, width=50, height=10)
 
         # Generate with for loop over list of serialized saves by name
-        update_savelist()
+        update_savelist('save')
         listbox.bind('<<ListboxSelect>>', update_buttons)
 
         # Set up horizontal and vertical scroll bars
