@@ -22,7 +22,7 @@ Primary features:
 [setuptools 57.0.0](https://pypi.org/project/setuptools/) (installed automatically)
 
 
-## _Usage_
+## _Setup_
 
 1. `git clone` or download this repository
 2. (Optional) Create a [virtual environment](https://docs.python.org/3/library/venv.html) in the directory and install the program there
@@ -42,7 +42,15 @@ Primary features:
    ```
    ./scripts/savegame.bat
    ```
+   
+## GUI
 
+To run the program, enter this command in the root directory:
+`savegame gui`
+
+![GUI example](src/savegame/media/example.png)
+
+## CLI
 #### Optional flags
 
 `-l`: display all your current saves
