@@ -186,7 +186,7 @@ class SaveManager:
                 for current_save_value in listbox_saves:
                     current_save = extract_save_name(current_save_value)
                     if current_save not in save_names:
-                        listbox.delete(listbox.get(0, END).index(current_save_value))   
+                        listbox.delete(listbox.get(0, END).index(current_save_value))
 
         # Set up GUI window root and main frame
         root = Tk()
