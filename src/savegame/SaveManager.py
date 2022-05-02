@@ -19,7 +19,7 @@ os.chdir(sys.path[0])
 SAVE_DIR = 'saves/'
 SAVE_DATA = SAVE_DIR + 'savedata'
 GAMES = {'Dark Souls 3': 'DarkSoulsIII', 'Elden Ring': 'EldenRing', 'Sekiro': 'Sekiro'}
-GAME_NAMES = GAMES.keys()
+GAME_NAMES = list(GAMES.keys())
 
 # TODO: Interfacing, reorganize functions to avoid repeated code in GUI section
 class SaveManager:
@@ -41,7 +41,7 @@ class SaveManager:
         self.args = args
         self.saves = {}
         self.save = None
-        self.game = 'Dark Souls 3'
+        self.game = 'Elden Ring'
 
     def start(self):
         # Load current save data from serialized savedata
@@ -81,33 +81,32 @@ class SaveManager:
             elif self.mode == 'remove':
                 self.__remove()
 
-    # TODO: break up this function
-            # outer keys to store game names in saves object data, use based on current game
-            # Add progress/success message and error messages
+    # TODO: Make gui into another class with a gui factory in the main savegame manager class called when gui mode is selected
             # Add image that changes based on name
-            # Reformat positioning
-            # Wrap getting save name in function
             # Refactor and interface
     def start_gui(self):
         print('Running...')
 
         def save():
             if use_temporary.get():
+                print('Creating temporary backup')
                 self.create_backup('userbackup')
                 messagebox.showinfo('Success', 'Temporary backup saved!')
             else:
-                save_value = None
+                save_value, save_desc = None, None
                 for i in listbox.curselection():
                     save_value = listbox.get(i)
+                    save_desc = self.saves[extract_save_name(save_value)].description
                 if not save_value:
                     save_value = new_save_name.get()
                     if ':' in save_value:
                         messagebox.showerror('Failed', 'Save name cannot include ":" character')
                         return
-                save_desc = new_save_desc.get(1.0, END)  # Retrieve description from description TextArea
+                    save_desc = new_save_desc.get(1.0, END)  # Retrieve description from description TextArea
                 if save_value:
-                    new_save_object = self.create_save(save_value, save_desc)
-                    self.saves[save_value] = new_save_object
+                    save_name = extract_save_name(save_value)
+                    new_save_object = self.create_save(save_name, save_desc)
+                    self.saves[save_name] = new_save_object
                     self.__pickle_saves()
                     messagebox.showinfo('Success', f'{save_value} saved!')
                     update_savelist('save')
@@ -174,6 +173,13 @@ class SaveManager:
                 update_buttons()
                 return False
 
+        # Switches game
+        def change_game(event):
+            self.game = game_combobox.get()
+            # Update save path
+            self.save_path = self.__get_save_path()
+            print(f'**Current game: {self.game}**\n')
+
         # Callback function to run whenever a save is saved or removed
         def update_savelist(mode):
             listbox_saves = listbox.get(0, END)
@@ -225,9 +231,9 @@ class SaveManager:
 
         # Game select combobox (normalize with game list in SaveManager)
         # Also need a load_image() function to change the image based on the game
-        game_list = ["Elden Ring", "Sekiro", "Dark Souls III"]
 
-        game_combobox = ttk.Combobox(frame, values=game_list)
+        game_combobox = ttk.Combobox(frame, values=GAME_NAMES)
+        game_combobox.bind('<<ComboboxSelected>>', change_game)
         game_combobox.set(self.game)
         game_combobox.pack(padx=5, pady=5)
 
@@ -258,7 +264,7 @@ class SaveManager:
         remove_btn = Button(frame, text='Remove', state=DISABLED, padx=20, pady=5, command=remove)
         remove_btn.pack(side=RIGHT, padx=5, pady=5)
 
-        # Start GUI loop
+        # Start GUI loop and add tracers
         root.mainloop()
 
     def create_save(self, name, description):
@@ -353,7 +359,7 @@ class SaveManager:
         Retrieves expected location or asks user to input custom location of their savegame
         """
         custom = False
-        print('Checking default game save location...')
+        print(f'Checking default save location for {self.game}...')
         game = GAMES[self.game]
         path = Path(f'C:/Users/{self.__user}/AppData/Roaming/{game}/')
         while not path.exists():
@@ -436,6 +442,7 @@ class SaveManager:
                      description):
             self.outer_instance = outer_instance
             self.name = name
+            self.game = self.outer_instance.game
             self.description = description
             self.__make_directory()
             self.save_file()
@@ -449,7 +456,11 @@ class SaveManager:
                 os.mkdir(path)
             except FileExistsError:
                 print('You have already created a save with this name!')
-                overwrite = input("Would you like to overwrite this save? (y/n): ").strip()
+                if self.outer_instance.mode == 'gui':
+                    overwrite = 'y'
+                    print('Overwriting save...')
+                else:
+                    overwrite = input("Would you like to overwrite this save? (y/n): ").strip()
                 while overwrite:
                     if overwrite == 'n':
                         print('Exiting...')
