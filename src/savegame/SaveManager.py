@@ -102,7 +102,7 @@ class SaveManager:
                     if ':' in save_value:
                         messagebox.showerror('Failed', 'Save name cannot include ":" character')
                         return
-                    save_desc = new_save_desc.get(1.0, END)  # Retrieve description from description TextArea
+                    save_desc = new_save_desc.get(1.0, END).strip()  # Retrieve description from description TextArea
                 if save_value:
                     save_name = extract_save_name(save_value)
                     new_save_object = self.create_save(save_name, save_desc)
