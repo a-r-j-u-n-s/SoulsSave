@@ -99,13 +99,6 @@ _Optional_:
 `savenames`: a list of your custom saves to delete. Leave blank to choose which save to delete after seeing the list
 
 
-## _Current Tasks_
-Version: 1.0
-- Configure script to work with multiple games
-- Configure `savegame` module to be usable globally from any directory
-- Publish on [PyPi](https://pypi.org/)
-
-
 ### Disclaimer
 Although this CLI does create automatic backups of your save file before performing any actions, you should still
 back up your original save folder just once before using the script
