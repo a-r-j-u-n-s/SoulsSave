@@ -120,7 +120,7 @@ class SaveManager:
                 for i in listbox.curselection():
                     save_value = listbox.get(i)
                 if save_value:
-                    self.load_backup(save_value)
+                    self.load_backup(extract_save_name(save_value))
                     messagebox.showinfo('Success', f'{save_value} loaded!')
                     update_savelist('save')
 
