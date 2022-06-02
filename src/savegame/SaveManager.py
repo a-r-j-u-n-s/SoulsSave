@@ -108,7 +108,7 @@ class SaveManager:
                     new_save_object = self.create_save(save_name, save_desc)
                     self.saves[save_name] = new_save_object
                     self.__pickle_saves()
-                    messagebox.showinfo('Success', f'{save_value} saved!')
+                    messagebox.showinfo('Success', f'{save_name} saved!')
                     update_savelist('save')
 
         def load():
