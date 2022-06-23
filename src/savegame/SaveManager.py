@@ -120,8 +120,9 @@ class SaveManager:
                 for i in listbox.curselection():
                     save_value = listbox.get(i)
                 if save_value:
-                    self.load_backup(extract_save_name(save_value))
-                    messagebox.showinfo('Success', f'{save_value} loaded!')
+                    save_name = extract_save_name(save_value)
+                    self.load_backup(save_name)
+                    messagebox.showinfo('Success', f'{save_name} loaded!')
                     update_savelist('save')
 
         def remove():
